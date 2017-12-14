@@ -1,65 +1,58 @@
+import * as chalk from "chalk";
 import * as WebRequest from "web-request";
-
 import * as WebSocket from "ws";
-
-import { BitfinexExchange, BitfinexStreamTickerRequest } from "./models";
+import {
+  BitfinexExchange,
+  BitfinexStreamTickerRequest,
+  GdaxExchange,
+  GdaxStreamTickerRequest,
+  OKCoinExchange,
+  OKCoinStreamTickerRequest,
+} from "./models";
 import { CryptoCurrencies, Currencies, ITickerUpdate } from "./types";
 
-const bitfinexExchange: BitfinexExchange = new BitfinexExchange(
-  (update: ITickerUpdate) => {
-    console.log("- - - BITFINEX - - -");
-    console.log(update.cryptoCurrency);
-    console.log("Selling at: " + update.sellingPrice);
-    console.log("Buying at: " + update.buyingPrice);
-    console.log("Spread at: " + (update.buyingPrice - update.sellingPrice));
-  },
-);
+// General configuration
 
-const request: BitfinexStreamTickerRequest = new BitfinexStreamTickerRequest(
-  [CryptoCurrencies.Bitcoin, CryptoCurrencies.Ethereum, CryptoCurrencies.Litecoin],
+const cryptoCurrencies: CryptoCurrencies[] = [
+  CryptoCurrencies.Bitcoin,
+  CryptoCurrencies.Ethereum,
+  CryptoCurrencies.Litecoin,
+];
+
+const onTickerUpdate = (exchangeName: string) =>
+  (update: ITickerUpdate) =>
+    console.log(formatTickerUpdate(update, exchangeName));
+
+const formatTickerUpdate = (update: ITickerUpdate, exchangeName: string) => {
+  let message: string = "";
+  if (update.cryptoCurrency === CryptoCurrencies.Bitcoin) {
+    message += chalk.red("BTC: ");
+  } else if (update.cryptoCurrency === CryptoCurrencies.Ethereum) {
+    message += chalk.yellow("ETH: ");
+  } else {
+    message += chalk.blue("LTC: ");
+  }
+  message += update.buyingPrice + " ";
+  if (exchangeName === "Bitfinex") {
+    message += "(" + chalk.red("BFNX") + ")";
+  } else {
+    message += "(" + chalk.green("GDAX") + ")";
+  }
+  return(message);
+};
+
+// Bitfinex
+const bitfinexExchange: BitfinexExchange = new BitfinexExchange(onTickerUpdate("Bitfinex"));
+const bitfinexRequest: BitfinexStreamTickerRequest = new BitfinexStreamTickerRequest(
+  cryptoCurrencies,
   Currencies.USD,
 );
-bitfinexExchange.streamTickerPrices(request);
+bitfinexExchange.streamTickerPrices(bitfinexRequest);
 
-// const wss = new WebSocket("wss://api.bitfinex.com/ws");
-// wss.onmessage = (msg) => console.log(msg.data);
-// wss.onopen = () => {
-//   wss.send(JSON.stringify({
-//     channel: "ticker",
-//     event: "subscribe",
-//     pair: "BTCUSD",
-//   }));
-//   wss.send(JSON.stringify({
-//     channel: "ticker",
-//     event: "subscribe",
-//     pair: "ETHUSD",
-//   }));
-//   wss.send(JSON.stringify({
-//     channel: "ticker",
-//     event: "subscribe",
-//     pair: "LTCUSD",
-//   }));
-// };
-
-// const gdaxWss = new WebSocket("wss://ws-feed.gdax.com");
-// gdaxWss.onmessage = (msg) => console.log(msg.data);
-// gdaxWss.onopen = () => {
-//   gdaxWss.send(JSON.stringify({
-//     channels: [
-//         {
-//             name: "ticker",
-//             product_ids: [
-//                 "BTC-USD",
-//                 "ETH-USD",
-//                 "LTC-USD",
-//             ],
-//         },
-//     ],
-//     product_ids: [
-//         "BTC-USD",
-//         "ETH-USD",
-//         "LTC-USD",
-//     ],
-//     type: "subscribe",
-//   }));
-// };
+// Gdax
+const gdaxExchange: GdaxExchange = new GdaxExchange(onTickerUpdate("GDAX"));
+const gdaxRequest: GdaxStreamTickerRequest = new GdaxStreamTickerRequest(
+  cryptoCurrencies,
+  Currencies.USD,
+);
+gdaxExchange.streamTickerPrices(gdaxRequest);

@@ -68,14 +68,14 @@ export function getCurrencyPairFromMsg(pairMsg: string): ICurrencyPair {
   return { currency, cryptoCurrency } as ICurrencyPair;
 }
 
-export function getTickerUpdateFromMsgData(msg: number[], currPair: ICurrencyPair): ITickerUpdate {
-  if (msg.length !== 11) {
+export function getTickerUpdateFromMsgData(msgData: number[], currPair: ICurrencyPair): ITickerUpdate {
+  if (msgData.length !== 11) {
     throw new Error("Message is not formatted correctly.");
   }
   return {
-    buyingPrice: msg[3],
+    buyingPrice: msgData[3],
     cryptoCurrency: currPair.cryptoCurrency,
     currency: currPair.currency,
-    sellingPrice: msg[1],
+    sellingPrice: msgData[1],
   } as ITickerUpdate;
 }

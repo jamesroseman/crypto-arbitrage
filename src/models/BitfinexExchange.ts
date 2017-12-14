@@ -14,10 +14,6 @@ import {
   ITickerUpdate,
 } from "../types";
 
-interface IChannelMap {
-    [key: string]: ICurrencyPair;
-}
-
 export class BitfinexExchange implements IExchange {
   public onTickerUpdate: (update: ITickerUpdate) => void;
   private wss: WebSocket;
