@@ -5,6 +5,7 @@ import {
   BitfinexExchange,
   BitmexExchange,
   GdaxExchange,
+  OKCoinExchange,
 } from "./models";
 import {
   CryptoCurrencies,
@@ -17,8 +18,8 @@ import {
 
 const cryptoCurrencies: CryptoCurrencies[] = [
   CryptoCurrencies.Bitcoin,
-  CryptoCurrencies.Ethereum,
-  CryptoCurrencies.Litecoin,
+  // CryptoCurrencies.Ethereum,
+  // CryptoCurrencies.Litecoin,
 ];
 
 const onTickerUpdate = (exchangeName: string) =>
@@ -41,6 +42,8 @@ const formatTickerUpdate = (update: ITickerUpdate, exchangeName: string) => {
     message += "(" + chalk.green("GDAX") + ")";
   } else if (exchangeName === "BTMX") {
     message += "(" + chalk.blue("BTMX") + ")";
+  } else if (exchangeName === "OKCOIN") {
+    message += "(" + chalk.yellow("OKCOIN") + ")";
   }
   return(message);
 };
@@ -51,7 +54,7 @@ const bitfinexRequest: ExchangeStreamTickerRequest = new ExchangeStreamTickerReq
   cryptoCurrencies,
   Currencies.USD,
 );
-// bitfinexExchange.streamTickerPrices(bitfinexRequest);
+bitfinexExchange.streamTickerPrices(bitfinexRequest);
 
 // Gdax
 const gdaxExchange: GdaxExchange = new GdaxExchange(onTickerUpdate("GDAX"));
@@ -59,7 +62,7 @@ const gdaxRequest: ExchangeStreamTickerRequest = new ExchangeStreamTickerRequest
   cryptoCurrencies,
   Currencies.USD,
 );
-// gdaxExchange.streamTickerPrices(gdaxRequest);
+gdaxExchange.streamTickerPrices(gdaxRequest);
 
 // BitMEX
 const bitmexExchange: BitmexExchange = new BitmexExchange(onTickerUpdate("BTMX"));
@@ -67,21 +70,12 @@ const bitmexRequest: ExchangeStreamTickerRequest = new ExchangeStreamTickerReque
   cryptoCurrencies,
   Currencies.USD,
 );
-// bitmexExchange.streamTickerPrices(bitmexRequest);
+bitmexExchange.streamTickerPrices(bitmexRequest);
 
-/* Testing */
-
-// "wss://real.okcoin.com:10440/websocket"
-// const bitmexUrl = "wss://www.bitmex.com/realtime";
-// const bitmexWss = new WebSocket(bitmexUrl);
-// bitmexWss.onmessage = (msg) => console.log(JSON.parse(msg.data));
-// bitmexWss.onopen = () => {
-//   bitmexWss.send(JSON.stringify({
-//     args: ["orderBookL2:ETH", "orderBookL2:LTC", "orderBookL2:XBTUSD"],
-//     op: "subscribe",
-//   }));
-  // bitmexWss.send(JSON.stringify({
-  //   event: "addChannel",
-  //   channel: "ok_sub_spot_ltc_usd_ticker",
-  // }));
-// };
+// OKCoin
+const okCoinExchange: OKCoinExchange = new OKCoinExchange(onTickerUpdate("OKCOIN"));
+const okCoinRequest: ExchangeStreamTickerRequest = new ExchangeStreamTickerRequest(
+  cryptoCurrencies,
+  Currencies.USD,
+);
+okCoinExchange.streamTickerPrices(okCoinRequest);
