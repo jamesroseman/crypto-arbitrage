@@ -46,9 +46,9 @@ function currenciesToInstrument(cryptoCurr: CryptoCurrencies, curr: Currencies) 
 
 export function assembleTickerSubscriptionMsg(cryptos: CryptoCurrencies[], curr: Currencies) {
   const instruments = cryptos.map((crypto) => currenciesToInstrument(crypto, curr));
-  const tradeBooks = instruments.map((i) => "quote:" + i);
+  const quoteBooks = instruments.map((i) => "quoteBin1m:" + i);
   return JSON.stringify({
-    args: tradeBooks,
+    args: quoteBooks,
     op: WSS_SUBSCRIBE_EVENT,
   });
 }
