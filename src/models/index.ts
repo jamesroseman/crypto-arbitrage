@@ -1,7 +1,4 @@
 // Exchanges
 export * from "./BitfinexExchange";
+export * from "./BitmexExchange";
 export * from "./GdaxExchange";
-
-// Requests
-export * from "./BitfinexStreamTickerRequest";
-export * from "./GdaxStreamTickerRequest";

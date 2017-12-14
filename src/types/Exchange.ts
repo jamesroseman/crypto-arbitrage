@@ -25,6 +25,18 @@ export interface IStreamTickerRequest extends IExchangeRequest {
   requestType: ExchangeRequestType.GetTickerPrice;
 }
 
+export class ExchangeStreamTickerRequest implements IStreamTickerRequest {
+  public cryptoCurrencies: CryptoCurrencies[];
+  public currency: Currencies;
+  public requestType: ExchangeRequestType;
+
+  constructor(cryptoCurrencies: CryptoCurrencies[], currency: Currencies) {
+    this.cryptoCurrencies = cryptoCurrencies;
+    this.currency = currency;
+    this.requestType = ExchangeRequestType.GetTickerPrice;
+  }
+}
+
 // Responses
 
 export interface IExchange {

@@ -6,9 +6,7 @@ import {
   WSS_URL,
 } from "../constants/BitfinexExchange";
 import {
-  BitfinexStreamTickerRequest,
-} from "../models";
-import {
+  ExchangeStreamTickerRequest,
   ICurrencyPair,
   IExchange,
   ITickerUpdate,
@@ -25,7 +23,7 @@ export class BitfinexExchange implements IExchange {
     this.wss.onmessage = this.deconstructMsg;
   }
 
-  public streamTickerPrices = (req: BitfinexStreamTickerRequest): void => {
+  public streamTickerPrices = (req: ExchangeStreamTickerRequest): void => {
     this.wss.onopen = () => {
       req.cryptoCurrencies.forEach((crypto) => {
         this.wss.send(assembleTickerSubscriptionMsg(crypto, req.currency));

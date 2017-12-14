@@ -1,9 +1,9 @@
 import * as WebSocket from "ws";
 import {
   assembleTickerSubscriptionMsg,
-  getTickerUpdateFromGdaxUpdate,
+  getTickerUpdateFromBitmexUpdate,
   WSS_URL,
-} from "../constants/GdaxExchange";
+} from "../constants/BitmexExchange";
 import {
   ExchangeStreamTickerRequest,
   ICurrencyPair,
@@ -11,7 +11,7 @@ import {
   ITickerUpdate,
 } from "../types";
 
-export class GdaxExchange implements IExchange {
+export class BitmexExchange implements IExchange {
   public onTickerUpdate: (update: ITickerUpdate) => void;
   private wss: WebSocket;
 
@@ -29,8 +29,8 @@ export class GdaxExchange implements IExchange {
 
   private deconstructMsg = (msg: any): void => {
     const msgData = JSON.parse(msg.data);
-    if (msgData.type === "ticker") {
-      const tickerUpdate: ITickerUpdate = getTickerUpdateFromGdaxUpdate(msgData);
+    if (msgData.hasOwnProperty("table") && msgData.table === "quote") {
+      const tickerUpdate: ITickerUpdate = getTickerUpdateFromBitmexUpdate(msgData);
       this.onTickerUpdate(tickerUpdate);
     }
   }

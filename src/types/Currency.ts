@@ -1,5 +1,6 @@
 export enum Currencies {
   USD = "USD",
+  XBT = "XBT",
 }
 
 export enum CryptoCurrencies {
