@@ -94,10 +94,12 @@ interface IGdaxTickerUpdate {
 
 export function getTickerUpdateFromGdaxUpdate(gdaxUpdate: IGdaxTickerUpdate): ITickerUpdate {
   const currencyPair: ICurrencyPair = getCurrencyPairFromProductId(gdaxUpdate.product_id);
+  const now: Date = new Date();
   return {
     buyingPrice: gdaxUpdate.best_ask,
     cryptoCurrency: currencyPair.cryptoCurrency,
     currency: currencyPair.currency,
     sellingPrice: gdaxUpdate.best_bid,
+    timestamp: now.getTime(),
   } as ITickerUpdate;
 }

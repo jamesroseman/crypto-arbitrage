@@ -11,6 +11,7 @@ export interface ITickerUpdate {
   sellingPrice: number;
   // This is also known as the "ask" price.
   buyingPrice: number;
+  timestamp: number;
 }
 
 // Requests

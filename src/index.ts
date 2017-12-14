@@ -23,8 +23,10 @@ const cryptoCurrencies: CryptoCurrencies[] = [
 ];
 
 const onTickerUpdate = (exchangeName: string) =>
-  (update: ITickerUpdate) =>
-    console.log(formatTickerUpdate(update, exchangeName));
+  (update: ITickerUpdate) => {
+    const date: Date = new Date(update.timestamp);
+    console.log(date.toLocaleTimeString() + " " + formatTickerUpdate(update, exchangeName));
+  };
 
 const formatTickerUpdate = (update: ITickerUpdate, exchangeName: string) => {
   let message: string = "";

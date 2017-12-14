@@ -81,10 +81,12 @@ interface IOKCoinTickerUpdate {
 
 export function getTickerUpdateFromOKCoinUpdate(okUpdate: IOKCoinTickerUpdate): ITickerUpdate {
   const currencyPair: ICurrencyPair = getCurrencyPairFromChannel(okUpdate.channel);
+  const now: Date = new Date();
   return {
     buyingPrice: okUpdate.data.buy,
     cryptoCurrency: currencyPair.cryptoCurrency,
     currency: currencyPair.currency,
     sellingPrice: okUpdate.data.sell,
+    timestamp: now.getTime(),
   } as ITickerUpdate;
 }

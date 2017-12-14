@@ -72,10 +72,12 @@ export function getTickerUpdateFromMsgData(msgData: number[], currPair: ICurrenc
   if (msgData.length !== 11) {
     throw new Error("Message is not formatted correctly.");
   }
+  const now: Date = new Date();
   return {
     buyingPrice: msgData[3],
     cryptoCurrency: currPair.cryptoCurrency,
     currency: currPair.currency,
     sellingPrice: msgData[1],
+    timestamp: now.getTime(),
   } as ITickerUpdate;
 }

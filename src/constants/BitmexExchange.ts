@@ -46,7 +46,12 @@ function currenciesToInstrument(cryptoCurr: CryptoCurrencies, curr: Currencies) 
 
 export function assembleTickerSubscriptionMsg(cryptos: CryptoCurrencies[], curr: Currencies) {
   const instruments = cryptos.map((crypto) => currenciesToInstrument(crypto, curr));
-  const quoteBooks = instruments.map((i) => "quoteBin1m:" + i);
+  const quoteBooks = instruments.map((i) => "quote:" + i);
+  if (!(CryptoCurrencies.Bitcoin in cryptos) && curr !== Currencies.XBT) {
+    // We always need a XBT/USD quote because ETH and LTC are only quoted in XBT
+    quoteBooks.push("quote:XBTUSD");
+  }
+
   return JSON.stringify({
     args: quoteBooks,
     op: WSS_SUBSCRIBE_EVENT,
@@ -87,13 +92,22 @@ interface IBitmexTickerUpdate {
   }];
 }
 
-export function getTickerUpdateFromBitmexUpdate(bmexUpdate: IBitmexTickerUpdate): ITickerUpdate {
+export function getTickerUpdateFromBitmexUpdate(
+  bmexUpdate: IBitmexTickerUpdate,
+  xbtToCurr: (price: number) => number = (price) => price,
+): ITickerUpdate {
   const currencyPair: ICurrencyPair = getCurrencyPairFromSymbol(bmexUpdate.data[0].symbol);
   const bmexData = bmexUpdate.data[0];
+  const updateDate: Date = new Date(bmexData.timestamp);
+  if (currencyPair.cryptoCurrency !== CryptoCurrencies.Bitcoin && currencyPair.currency !== Currencies.XBT) {
+    bmexData.askPrice = xbtToCurr(bmexData.askPrice);
+    bmexData.bidPrice = xbtToCurr(bmexData.bidPrice);
+  }
   return {
     buyingPrice: bmexData.askPrice,
     cryptoCurrency: currencyPair.cryptoCurrency,
     currency: currencyPair.currency,
     sellingPrice: bmexData.bidPrice,
+    timestamp: updateDate.getTime(),
   } as ITickerUpdate;
 }
