@@ -1,0 +1,22 @@
+{
+  "name": "crypto-arbitrage",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node ./src/index.ts",
+    "lint": "tslint -c ./tslint.json src/**/*.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "James Roseman <jroseman@twitter.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-node": "^4.0.1",
+    "typescript": "^2.6.2",
+    "web-request": "^1.0.7"
+  },
+  "dependencies": {
+    "tslint": "^5.8.0",
+    "ws": "^3.3.2"
+  }
+}
