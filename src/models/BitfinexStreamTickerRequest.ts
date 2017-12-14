@@ -16,11 +16,4 @@ export class BitfinexStreamTickerRequest implements IStreamTickerRequest {
     this.currency = currency;
     this.requestType = ExchangeRequestType.GetTickerPrice;
   }
-
-  // TODO(jroseman): get this to do something
-  public onPriceUpdate(update: ITickerUpdate) {
-    console.log("Currency: ", update.cryptoCurrency);
-    console.log("Price: $", update.price);
-    return;
-  }
 }

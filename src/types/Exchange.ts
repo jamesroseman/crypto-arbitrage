@@ -7,7 +7,10 @@ export enum ExchangeRequestType {
 export interface ITickerUpdate {
   cryptoCurrency: CryptoCurrencies;
   currency: Currencies;
-  price: number;
+  // This is also known as the "bid" price.
+  sellingPrice: number;
+  // This is also known as the "ask" price.
+  buyingPrice: number;
 }
 
 // Requests
@@ -20,11 +23,11 @@ export interface IExchangeRequest {
 
 export interface IStreamTickerRequest extends IExchangeRequest {
   requestType: ExchangeRequestType.GetTickerPrice;
-  onPriceUpdate(update: ITickerUpdate): void;
 }
 
 // Responses
 
 export interface IExchange {
+  onTickerUpdate: (update: ITickerUpdate) => void;
   streamTickerPrices(req: IStreamTickerRequest): void;
 }

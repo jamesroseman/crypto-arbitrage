@@ -7,3 +7,8 @@ export enum CryptoCurrencies {
   Ethereum = "ETH",
   Litecoin = "LTC",
 }
+
+export interface ICurrencyPair {
+  cryptoCurrency: CryptoCurrencies;
+  currency: Currencies;
+}
