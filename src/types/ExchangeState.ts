@@ -4,6 +4,7 @@ import { ITickerUpdate } from "./Exchange";
 interface ICurrencyHistory {
   latestAskPrice: number;
   latestBidPrice: number;
+  lastTimestamp: number;
 }
 
 export interface IExchangeState {
@@ -31,5 +32,6 @@ export class ExchangeState implements IExchangeState {
   public addTickerToState = (update: ITickerUpdate) => {
     this.currencies[update.cryptoCurrency.toString()].latestAskPrice = update.askPrice;
     this.currencies[update.cryptoCurrency.toString()].latestBidPrice = update.bidPrice;
+    this.currencies[update.cryptoCurrency.toString()].lastTimestamp = update.timestamp;
   }
 }

@@ -50,19 +50,18 @@ export class Market implements IMarket {
         let lowestPrice: number = Number.MAX_VALUE;
         const exchangePrices = {};
         this.exchanges.forEach((exchange) => {
-          if (exchange.state.currencies[crypto].latestAskPrice < lowestPrice) {
-            lowestPrice = exchange.state.currencies[crypto].latestAskPrice;
-          }
-          if (exchange.state.currencies[crypto].latestBidPrice < lowestPrice) {
-            lowestPrice = exchange.state.currencies[crypto].latestBidPrice;
-          }
+          lowestPrice = Math.min(
+            lowestPrice,
+            exchange.state.currencies[crypto].latestAskPrice,
+            exchange.state.currencies[crypto].latestBidPrice,
+          );
+          this.state[crypto].lowestPrice = lowestPrice;
           exchangePrices[exchange.name] = {
             askPrice: exchange.state.currencies[crypto].latestAskPrice,
             bidPrice: exchange.state.currencies[crypto].latestBidPrice,
             exchangeName: exchange.name,
           } as IExchangePrice;
         });
-        this.state[crypto].lowestPrice = lowestPrice;
         // Push market prices and timestamp at the same time
         this.state[crypto].prices.push({
           exchangePrices,

@@ -8,7 +8,6 @@ import {
   BitmexExchange,
   GdaxExchange,
   Market,
-  OKCoinExchange,
 } from "./models";
 import {
   CryptoCurrencies,
@@ -33,20 +32,26 @@ const cryptoCurrencies: CryptoCurrencies[] = [
   CryptoCurrencies.Litecoin,
 ];
 
+const formatTs = (ts: number) => {
+  const date: Date = new Date(ts);
+  return date.getMinutes() + ":" + date.getSeconds() + ":" + date.getMilliseconds();
+};
+
 const onTickerUpdate = (update: ITickerUpdate, state: IExchangeState) => {
   const date: Date = new Date(update.timestamp);
   const askMsg: string = date.toLocaleTimeString() + " " + update.askPrice + " (" + state.name + ")";
   const bidMsg: string = date.toLocaleTimeString() + " " + update.bidPrice + " (" + state.name + ")";
   if (update.cryptoCurrency === CryptoCurrencies.Bitcoin) {
-    btcBuyLog.log(askMsg);
-    btcSellLog.log(bidMsg);
+    btcAskLog.log(askMsg);
+    btcBidLog.log(bidMsg);
     btcPriceTable.setData({
       data: exchanges.map((exchange) => {
         const latestBid: number = exchange.state.currencies[CryptoCurrencies.Bitcoin].latestBidPrice;
         const latestAsk: number = exchange.state.currencies[CryptoCurrencies.Bitcoin].latestAskPrice;
-        return [exchange.name, latestBid, latestAsk, (latestBid - latestAsk)];
+        const lastTimestamp: string = formatTs(exchange.state.currencies[CryptoCurrencies.Bitcoin].lastTimestamp);
+        return [exchange.name, latestBid, latestAsk, (latestBid - latestAsk), lastTimestamp];
       }),
-      headers: ["Exchange", "Bid", "Ask", "Spread"],
+      headers: ["Exchange", "Bid", "Ask", "Spread", "Timestamp"],
     });
   }
 };
@@ -68,15 +73,11 @@ const gdaxExchange: GdaxExchange = new GdaxExchange(gdaxName);
 const bitmexName: string = "BTMX";
 const bitmexExchange: BitmexExchange = new BitmexExchange(bitmexName);
 
-const okCoinName: string = "OKC";
-const okCoinExchange: OKCoinExchange = new OKCoinExchange(okCoinName);
-
 // Market
 const exchanges: IExchange[] = [
   bitfinexExchange,
   bitmexExchange,
   gdaxExchange,
-  okCoinExchange,
 ];
 const exchangeNames: string[] = exchanges.map((exchange) => exchange.name);
 const market: Market = new Market(exchanges);
@@ -86,7 +87,7 @@ market.streamTickerPrices(streamTickerRequest);
 const screen = blessed.screen();
 const grid = new contrib.grid({ rows: 2, cols: 4, screen });
 
-const btcGraph = grid.set(0, 0, 1, 3, contrib.line, {
+const btcGraph = grid.set(0, 0, 1, 4, contrib.line, {
   label: "BTC Quote",
   legend: { width: 12 },
   showLegend: true,
@@ -105,7 +106,6 @@ const btcLineGraphOptions: ICryptoCurrencyLineGraphOptions = {
     BTFNX: btcLineGraph.createOptionsFromColor("red"),
     BTMX: btcLineGraph.createOptionsFromColor("blue"),
     GDAX: btcLineGraph.createOptionsFromColor("green"),
-    OKCOIN: btcLineGraph.createOptionsFromColor("yellow"),
   },
 } as ICryptoCurrencyLineGraphOptions;
 
@@ -115,19 +115,19 @@ setInterval(() => {
   btcGraph.options.minY = 0.999 * minY;
 }, 1000);
 
-const btcBuyLog = grid.set(1, 0, 1, 1, contrib.log, {
+const btcAskLog = grid.set(1, 0, 1, 1, contrib.log, {
   fg: "red",
-  label: "BTC (B) Quote Log",
+  label: "BTC (A) Quote Log",
   selectedFg: "green",
 });
-const btcSellLog = grid.set(1, 1, 1, 1, contrib.log, {
+const btcBidLog = grid.set(1, 1, 1, 1, contrib.log, {
   fg: "green",
-  label: "BTC (S) Quote Log",
+  label: "BTC (B) Quote Log",
   selectedFg: "green",
 });
 const btcPriceTable = grid.set(1, 2, 1, 2, contrib.table, {
   border: {type: "line", fg: "cyan"},
-  columnWidth: [8, 10, 10, 10],
+  columnWidth: [8, 10, 10, 10, 14],
   fg: "white",
   height: "30%",
   interactive: true,
