@@ -7,14 +7,18 @@ import {
 import {
   CryptoCurrencies,
   Currencies,
+  ExchangeState,
   ExchangeStreamTickerRequest,
   ICurrencyPair,
   IExchange,
+  IExchangeState,
   ITickerUpdate,
 } from "../types";
 
 export class BitmexExchange implements IExchange {
-  public onTickerUpdate: (update: ITickerUpdate) => void;
+  public name: string;
+  public onTickerUpdate: (update: ITickerUpdate, state: IExchangeState) => void;
+  public state: ExchangeState;
   private wss: WebSocket;
   private cryptos: CryptoCurrencies[];
   private currency: Currencies;
@@ -22,14 +26,16 @@ export class BitmexExchange implements IExchange {
   private lastXbtSellPrice: number;
   private xbtPriceSet: boolean = false;
 
-  constructor(onTickerUpdate: (update: ITickerUpdate) => void) {
-    this.onTickerUpdate = onTickerUpdate;
+  constructor(name: string) {
+    this.name = name;
     this.wss = new WebSocket(WSS_URL);
     this.wss.onmessage = this.deconstructMsg;
   }
 
   public streamTickerPrices = (req: ExchangeStreamTickerRequest): void => {
+    this.onTickerUpdate = req.onTickerUpdate;
     this.cryptos = req.cryptoCurrencies;
+    this.state = new ExchangeState(this.name, this.cryptos, req.maxHistoryLength);
     this.currency = req.currency;
     this.wss.onopen = () => {
       this.wss.send(assembleTickerSubscriptionMsg(req.cryptoCurrencies, req.currency));
@@ -55,7 +61,8 @@ export class BitmexExchange implements IExchange {
           tickerUpdate.sellingPrice *= this.lastXbtSellPrice;
           tickerUpdate.currency = Currencies.USD;
         }
-        this.onTickerUpdate(tickerUpdate);
+        this.state.addTickerToState(tickerUpdate);
+        this.onTickerUpdate(tickerUpdate, this.state);
       }
     }
   }

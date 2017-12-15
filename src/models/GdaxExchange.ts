@@ -5,23 +5,29 @@ import {
   WSS_URL,
 } from "../constants/GdaxExchange";
 import {
+  ExchangeState,
   ExchangeStreamTickerRequest,
   ICurrencyPair,
   IExchange,
+  IExchangeState,
   ITickerUpdate,
 } from "../types";
 
 export class GdaxExchange implements IExchange {
-  public onTickerUpdate: (update: ITickerUpdate) => void;
+  public name: string;
+  public onTickerUpdate: (update: ITickerUpdate, state: IExchangeState) => void;
+  public state: ExchangeState;
   private wss: WebSocket;
 
-  constructor(onTickerUpdate: (update: ITickerUpdate) => void) {
-    this.onTickerUpdate = onTickerUpdate;
+  constructor(name: string) {
+    this.name = name;
     this.wss = new WebSocket(WSS_URL);
     this.wss.onmessage = this.deconstructMsg;
   }
 
   public streamTickerPrices = (req: ExchangeStreamTickerRequest): void => {
+    this.onTickerUpdate = req.onTickerUpdate;
+    this.state = new ExchangeState(this.name, req.cryptoCurrencies, req.maxHistoryLength);
     this.wss.onopen = () => {
       this.wss.send(assembleTickerSubscriptionMsg(req.cryptoCurrencies, req.currency));
     };
@@ -31,7 +37,8 @@ export class GdaxExchange implements IExchange {
     const msgData = JSON.parse(msg.data);
     if (msgData.type === "ticker") {
       const tickerUpdate: ITickerUpdate = getTickerUpdateFromGdaxUpdate(msgData);
-      this.onTickerUpdate(tickerUpdate);
+      this.state.addTickerToState(tickerUpdate);
+      this.onTickerUpdate(tickerUpdate, this.state);
     }
   }
 }

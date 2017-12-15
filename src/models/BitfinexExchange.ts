@@ -6,24 +6,33 @@ import {
   WSS_URL,
 } from "../constants/BitfinexExchange";
 import {
+  CryptoCurrencies,
+  ExchangeState,
   ExchangeStreamTickerRequest,
   ICurrencyPair,
   IExchange,
+  IExchangeState,
   ITickerUpdate,
 } from "../types";
 
 export class BitfinexExchange implements IExchange {
-  public onTickerUpdate: (update: ITickerUpdate) => void;
+  public name: string;
+  public onTickerUpdate: (update: ITickerUpdate, state: IExchangeState) => void;
+  public state: ExchangeState;
   private wss: WebSocket;
-  private channelMap: Map<string, ICurrencyPair> = {};
+  private channelMap: { [key: string]: ICurrencyPair } = {};
+  private cryptos: CryptoCurrencies[];
 
-  constructor(onTickerUpdate: (update: ITickerUpdate) => void) {
-    this.onTickerUpdate = onTickerUpdate;
+  constructor(name: string) {
+    this.name = name;
     this.wss = new WebSocket(WSS_URL);
     this.wss.onmessage = this.deconstructMsg;
   }
 
   public streamTickerPrices = (req: ExchangeStreamTickerRequest): void => {
+    this.onTickerUpdate = req.onTickerUpdate;
+    this.cryptos = req.cryptoCurrencies;
+    this.state = new ExchangeState(this.name, this.cryptos, req.maxHistoryLength);
     this.wss.onopen = () => {
       req.cryptoCurrencies.forEach((crypto) => {
         this.wss.send(assembleTickerSubscriptionMsg(crypto, req.currency));
@@ -40,7 +49,8 @@ export class BitfinexExchange implements IExchange {
       // This is a Bitfinex ticker message
       const currencyPair: ICurrencyPair = this.channelMap[msgData[0]];
       const tickerUpdate: ITickerUpdate = getTickerUpdateFromMsgData(msgData, currencyPair);
-      this.onTickerUpdate(tickerUpdate);
+      this.state.addTickerToState(tickerUpdate);
+      this.onTickerUpdate(tickerUpdate, this.state);
     }
   }
 }

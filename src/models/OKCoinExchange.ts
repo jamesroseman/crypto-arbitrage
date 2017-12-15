@@ -5,23 +5,29 @@ import {
   WSS_URL,
 } from "../constants/OKCoinExchange";
 import {
+  ExchangeState,
   ExchangeStreamTickerRequest,
   ICurrencyPair,
   IExchange,
+  IExchangeState,
   ITickerUpdate,
 } from "../types";
 
 export class OKCoinExchange implements IExchange {
-  public onTickerUpdate: (update: ITickerUpdate) => void;
+  public name: string;
+  public onTickerUpdate: (update: ITickerUpdate, state: IExchangeState) => void;
+  public state: ExchangeState;
   private wss: WebSocket;
 
-  constructor(onTickerUpdate: (update: ITickerUpdate) => void) {
-    this.onTickerUpdate = onTickerUpdate;
+  constructor(name: string) {
+    this.name = name;
     this.wss = new WebSocket(WSS_URL);
     this.wss.onmessage = this.deconstructMsg;
   }
 
   public streamTickerPrices = (req: ExchangeStreamTickerRequest): void => {
+    this.onTickerUpdate = req.onTickerUpdate;
+    this.state = new ExchangeState(this.name, req.cryptoCurrencies, req.maxHistoryLength);
     this.wss.onopen = () => {
       req.cryptoCurrencies.forEach((crypto) => {
         this.wss.send(assembleTickerSubscriptionMsg(crypto, req.currency));
@@ -33,7 +39,8 @@ export class OKCoinExchange implements IExchange {
     const msgData = JSON.parse(msg.data)[0];
     if (msgData.channel.startsWith("ok_sub_spot_")) {
       const tickerUpdate: ITickerUpdate = getTickerUpdateFromOKCoinUpdate(msgData);
-      this.onTickerUpdate(tickerUpdate);
+      this.state.addTickerToState(tickerUpdate);
+      this.onTickerUpdate(tickerUpdate, this.state);
     }
   }
 }

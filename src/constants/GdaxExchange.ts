@@ -76,30 +76,30 @@ function getCurrencyPairFromProductId(productId: string): ICurrencyPair {
 
 interface IGdaxTickerUpdate {
   type: string;
-  sequence: number;
+  sequence: string;
   product_id: string;
-  price: number;
-  open_24h: number;
-  volume_24h: number;
-  low_24h: number;
-  high_24h: number;
-  volume_30d: number;
-  best_bid: number;
-  best_ask: number;
+  price: string;
+  open_24h: string;
+  volume_24h: string;
+  low_24h: string;
+  high_24h: string;
+  volume_30d: string;
+  best_bid: string;
+  best_ask: string;
   side: string;
   time: string;
-  trade_id: number;
-  last_size: number;
+  trade_id: string;
+  last_size: string;
 }
 
 export function getTickerUpdateFromGdaxUpdate(gdaxUpdate: IGdaxTickerUpdate): ITickerUpdate {
   const currencyPair: ICurrencyPair = getCurrencyPairFromProductId(gdaxUpdate.product_id);
   const now: Date = new Date();
   return {
-    buyingPrice: gdaxUpdate.best_ask,
+    buyingPrice: parseInt(gdaxUpdate.best_ask, 10),
     cryptoCurrency: currencyPair.cryptoCurrency,
     currency: currencyPair.currency,
-    sellingPrice: gdaxUpdate.best_bid,
+    sellingPrice: parseInt(gdaxUpdate.best_bid, 10),
     timestamp: now.getTime(),
   } as ITickerUpdate;
 }

@@ -69,13 +69,13 @@ function getCurrencyPairFromChannel(channel: string): ICurrencyPair {
 interface IOKCoinTickerUpdate {
   channel: string;
   data: {
-    buy: number,
-    high: number,
-    last: number,
-    low: number,
-    sell: number,
-    timestamp: number,
-    vol: number,
+    buy: string,
+    high: string,
+    last: string,
+    low: string,
+    sell: string,
+    timestamp: string,
+    vol: string,
   };
 }
 
@@ -83,10 +83,10 @@ export function getTickerUpdateFromOKCoinUpdate(okUpdate: IOKCoinTickerUpdate): 
   const currencyPair: ICurrencyPair = getCurrencyPairFromChannel(okUpdate.channel);
   const now: Date = new Date();
   return {
-    buyingPrice: okUpdate.data.buy,
+    buyingPrice: parseInt(okUpdate.data.buy, 10),
     cryptoCurrency: currencyPair.cryptoCurrency,
     currency: currencyPair.currency,
-    sellingPrice: okUpdate.data.sell,
+    sellingPrice: parseInt(okUpdate.data.sell, 10),
     timestamp: now.getTime(),
   } as ITickerUpdate;
 }
