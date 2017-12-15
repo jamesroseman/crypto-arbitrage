@@ -96,10 +96,10 @@ export function getTickerUpdateFromGdaxUpdate(gdaxUpdate: IGdaxTickerUpdate): IT
   const currencyPair: ICurrencyPair = getCurrencyPairFromProductId(gdaxUpdate.product_id);
   const now: Date = new Date();
   return {
-    buyingPrice: parseInt(gdaxUpdate.best_ask, 10),
+    askPrice: parseInt(gdaxUpdate.best_ask, 10),
+    bidPrice: parseInt(gdaxUpdate.best_bid, 10),
     cryptoCurrency: currencyPair.cryptoCurrency,
     currency: currencyPair.currency,
-    sellingPrice: parseInt(gdaxUpdate.best_bid, 10),
     timestamp: now.getTime(),
   } as ITickerUpdate;
 }

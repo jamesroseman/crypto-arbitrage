@@ -22,8 +22,8 @@ export class BitmexExchange implements IExchange {
   private wss: WebSocket;
   private cryptos: CryptoCurrencies[];
   private currency: Currencies;
-  private lastXbtBuyPrice: number;
-  private lastXbtSellPrice: number;
+  private lastXbtBidPrice: number;
+  private lastXbtAskPrice: number;
   private xbtPriceSet: boolean = false;
 
   constructor(name: string) {
@@ -35,7 +35,7 @@ export class BitmexExchange implements IExchange {
   public streamTickerPrices = (req: ExchangeStreamTickerRequest): void => {
     this.onTickerUpdate = req.onTickerUpdate;
     this.cryptos = req.cryptoCurrencies;
-    this.state = new ExchangeState(this.name, this.cryptos, req.maxHistoryLength);
+    this.state = new ExchangeState(this.name, this.cryptos);
     this.currency = req.currency;
     this.wss.onopen = () => {
       this.wss.send(assembleTickerSubscriptionMsg(req.cryptoCurrencies, req.currency));
@@ -49,16 +49,16 @@ export class BitmexExchange implements IExchange {
       // Check if this is a XBT/USD price we only need for translating XBT prices,
       // or if it's actually wanted.
       if (tickerUpdate.cryptoCurrency === CryptoCurrencies.Bitcoin) {
-        this.lastXbtBuyPrice = tickerUpdate.buyingPrice;
-        this.lastXbtSellPrice = tickerUpdate.sellingPrice;
+        this.lastXbtAskPrice = tickerUpdate.askPrice;
+        this.lastXbtBidPrice = tickerUpdate.bidPrice;
         this.xbtPriceSet = true;
       }
       const updateContainsCrypto: boolean = this.cryptos.filter((c) => c === tickerUpdate.cryptoCurrency).length > 0;
       if (updateContainsCrypto && this.xbtPriceSet) {
         if (tickerUpdate.currency !== this.currency && tickerUpdate.currency === Currencies.XBT) {
           // Translate XBT price
-          tickerUpdate.buyingPrice *= this.lastXbtBuyPrice;
-          tickerUpdate.sellingPrice *= this.lastXbtSellPrice;
+          tickerUpdate.askPrice *= this.lastXbtAskPrice;
+          tickerUpdate.bidPrice *= this.lastXbtBidPrice;
           tickerUpdate.currency = Currencies.USD;
         }
         this.state.addTickerToState(tickerUpdate);

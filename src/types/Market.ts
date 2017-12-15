@@ -3,9 +3,9 @@ import { IStreamTickerRequest } from "./Exchange";
 import { IExchangeState } from "./ExchangeState";
 
 export interface IExchangePrice {
-  buyingPrice: number;
+  askPrice: number;
+  bidPrice: number;
   exchangeName: string;
-  sellingPrice: number;
 }
 
 export interface IMarketPrice {
@@ -17,6 +17,7 @@ export interface IMarketPrice {
 
 export interface IMarketCurrencyState {
   lastActiveTimestamp: number;
+  lowestPrice: number;
   prices: IMarketPrice[];
   timestamps: number[];
 }

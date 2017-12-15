@@ -6,12 +6,10 @@ export enum ExchangeRequestType {
 }
 
 export interface ITickerUpdate {
+  askPrice: number;
+  bidPrice: number;
   cryptoCurrency: CryptoCurrencies;
   currency: Currencies;
-  // This is also known as the "bid" price.
-  sellingPrice: number;
-  // This is also known as the "ask" price.
-  buyingPrice: number;
   timestamp: number;
 }
 

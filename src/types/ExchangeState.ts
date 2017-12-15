@@ -2,8 +2,8 @@ import { CryptoCurrencies, Currencies } from "./Currency";
 import { ITickerUpdate } from "./Exchange";
 
 interface ICurrencyHistory {
-  latestBuyingPrice: number;
-  latestSellingPrice: number;
+  latestAskPrice: number;
+  latestBidPrice: number;
 }
 
 export interface IExchangeState {
@@ -17,21 +17,19 @@ export class ExchangeState implements IExchangeState {
   public currencies: { [cryptoCurrency: string]: ICurrencyHistory } = {};
   public name: string;
   public timestamps: number[] = [];
-  private maxHistoryLength: number;
 
-  constructor(name: string, cryptoCurrencies: CryptoCurrencies[], maxHistoryLength: number) {
+  constructor(name: string, cryptoCurrencies: CryptoCurrencies[]) {
     this.name = name;
     cryptoCurrencies.map((cryptoCurr) => {
       this.currencies[cryptoCurr] = {
-        latestBuyingPrice: 0,
-        latestSellingPrice: 0,
+        latestAskPrice: 0,
+        latestBidPrice: 0,
       } as ICurrencyHistory;
     });
-    this.maxHistoryLength = maxHistoryLength;
   }
 
   public addTickerToState = (update: ITickerUpdate) => {
-    this.currencies[update.cryptoCurrency.toString()].latestBuyingPrice = update.buyingPrice;
-    this.currencies[update.cryptoCurrency.toString()].latestSellingPrice = update.sellingPrice;
+    this.currencies[update.cryptoCurrency.toString()].latestAskPrice = update.askPrice;
+    this.currencies[update.cryptoCurrency.toString()].latestBidPrice = update.bidPrice;
   }
 }

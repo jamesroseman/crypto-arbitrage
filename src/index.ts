@@ -25,7 +25,7 @@ import {
 
 // General configuration
 
-const MAX_HISTORY_LENGTH: number = 50;
+const MAX_HISTORY_LENGTH: number = 60;
 
 const cryptoCurrencies: CryptoCurrencies[] = [
   CryptoCurrencies.Bitcoin,
@@ -35,17 +35,19 @@ const cryptoCurrencies: CryptoCurrencies[] = [
 
 const onTickerUpdate = (update: ITickerUpdate, state: IExchangeState) => {
   const date: Date = new Date(update.timestamp);
-  const msg: string = date.toLocaleTimeString() + " " + update.buyingPrice + " (" + state.name + ")";
+  const askMsg: string = date.toLocaleTimeString() + " " + update.askPrice + " (" + state.name + ")";
+  const bidMsg: string = date.toLocaleTimeString() + " " + update.bidPrice + " (" + state.name + ")";
   if (update.cryptoCurrency === CryptoCurrencies.Bitcoin) {
-    btcLog.log(msg);
-  } else if (update.cryptoCurrency === CryptoCurrencies.Ethereum) {
-    // Update the log
-    ethLog.log(msg);
-    // Update the graph
-  } else if (update.cryptoCurrency === CryptoCurrencies.Litecoin) {
-    // Update the log
-    ltcLog.log(msg);
-    // Update the graph
+    btcBuyLog.log(askMsg);
+    btcSellLog.log(bidMsg);
+    btcPriceTable.setData({
+      data: exchanges.map((exchange) => {
+        const latestBid: number = exchange.state.currencies[CryptoCurrencies.Bitcoin].latestBidPrice;
+        const latestAsk: number = exchange.state.currencies[CryptoCurrencies.Bitcoin].latestAskPrice;
+        return [exchange.name, latestBid, latestAsk, (latestBid - latestAsk)];
+      }),
+      headers: ["Exchange", "Bid", "Ask", "Spread"],
+    });
   }
 };
 
@@ -66,7 +68,7 @@ const gdaxExchange: GdaxExchange = new GdaxExchange(gdaxName);
 const bitmexName: string = "BTMX";
 const bitmexExchange: BitmexExchange = new BitmexExchange(bitmexName);
 
-const okCoinName: string = "OKCOIN";
+const okCoinName: string = "OKC";
 const okCoinExchange: OKCoinExchange = new OKCoinExchange(okCoinName);
 
 // Market
@@ -82,23 +84,23 @@ market.streamTickerPrices(streamTickerRequest);
 
 // Dashboard
 const screen = blessed.screen();
-const grid = new contrib.grid({ rows: 2, cols: 3, screen });
+const grid = new contrib.grid({ rows: 2, cols: 4, screen });
 
 const btcGraph = grid.set(0, 0, 1, 3, contrib.line, {
-  label: "BTC Buying Price",
+  label: "BTC Quote",
   legend: { width: 12 },
-  minY: 650,
   showLegend: true,
 });
 
 const btcLineGraph: CryptoCurrencyLineGraph = new CryptoCurrencyLineGraph(
-  CryptoCurrencies.Ethereum,
+  CryptoCurrencies.Bitcoin,
   exchangeNames,
   market,
   MAX_HISTORY_LENGTH,
 );
 const btcLineGraphOptions: ICryptoCurrencyLineGraphOptions = {
-  isBuyingPrice: false,
+  isAskPrice: true,
+  isBidPrice: true,
   options: {
     BTFNX: btcLineGraph.createOptionsFromColor("red"),
     BTMX: btcLineGraph.createOptionsFromColor("blue"),
@@ -107,25 +109,38 @@ const btcLineGraphOptions: ICryptoCurrencyLineGraphOptions = {
   },
 } as ICryptoCurrencyLineGraphOptions;
 
-setInterval(() => btcGraph.setData(btcLineGraph.getLineGraphData(btcLineGraphOptions)), 1000);
+setInterval(() => {
+  btcGraph.setData(btcLineGraph.getLineGraphData(btcLineGraphOptions));
+  const minY: number = market.state[CryptoCurrencies.Bitcoin].lowestPrice;
+  btcGraph.options.minY = 0.999 * minY;
+}, 1000);
 
-const btcLog = grid.set(1, 0, 1, 1, contrib.log, {
+const btcBuyLog = grid.set(1, 0, 1, 1, contrib.log, {
   fg: "red",
-  label: "BTC Quote Log",
+  label: "BTC (B) Quote Log",
   selectedFg: "green",
 });
-const ethLog = grid.set(1, 1, 1, 1, contrib.log, {
-  fg: "blue",
-  label: "ETH Quote Log",
+const btcSellLog = grid.set(1, 1, 1, 1, contrib.log, {
+  fg: "green",
+  label: "BTC (S) Quote Log",
   selectedFg: "green",
 });
-const ltcLog = grid.set(1, 2, 1, 1, contrib.log, {
-  fg: "yellow",
-  label: "LTC Quote Log",
-  selectedFg: "green",
+const btcPriceTable = grid.set(1, 2, 1, 2, contrib.table, {
+  border: {type: "line", fg: "cyan"},
+  columnWidth: [8, 10, 10, 10],
+  fg: "white",
+  height: "30%",
+  interactive: true,
+  keys: true,
+  label: "BTC Latest Price",
+  selectedBg: "blue",
+  selectedFg: "white",
 });
 
 screen.key(["escape", "q", "C-c"], (ch, key) => {
   return process.exit(0);
+});
+screen.key(["enter"], (ch, key) => {
+  btcGraph.setData(btcLineGraph.getLineGraphData(btcLineGraphOptions));
 });
 screen.render();

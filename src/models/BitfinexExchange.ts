@@ -32,7 +32,7 @@ export class BitfinexExchange implements IExchange {
   public streamTickerPrices = (req: ExchangeStreamTickerRequest): void => {
     this.onTickerUpdate = req.onTickerUpdate;
     this.cryptos = req.cryptoCurrencies;
-    this.state = new ExchangeState(this.name, this.cryptos, req.maxHistoryLength);
+    this.state = new ExchangeState(this.name, this.cryptos);
     this.wss.onopen = () => {
       req.cryptoCurrencies.forEach((crypto) => {
         this.wss.send(assembleTickerSubscriptionMsg(crypto, req.currency));

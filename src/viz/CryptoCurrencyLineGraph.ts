@@ -10,9 +10,12 @@ import {
   IMarketState,
 } from "../types";
 
+// TODO: add non-exclusive isSellingPrice to display both sell and buys!
 export interface ICryptoCurrencyLineGraphOptions {
-  // Is this graph displaying buying price or selling price?
-  isBuyingPrice: boolean;
+  // Is this graph displaying ask price?
+  isAskPrice: boolean;
+  // Is this graph displaying bid price?
+  isBidPrice: boolean;
   options: {
     [exchangeName: string]: ILineGraphOptions;
   };
@@ -50,8 +53,8 @@ export class CryptoCurrencyLineGraph {
 
   public getLineGraphData = (graphOptions: ICryptoCurrencyLineGraphOptions) => {
     // Get the timestamp labels
-    const prices = this.marketState[this.cryptoCurrency].prices;
-    const timestamps = this.marketState[this.cryptoCurrency].timestamps;
+    const prices: IMarketPrice[] = this.marketState[this.cryptoCurrency].prices;
+    const timestamps: number[] = this.marketState[this.cryptoCurrency].timestamps;
     const timestampLabels: string[] = timestamps.map(this.getLabelFromTimestamp);
     // De-dupe prices and timestamps
     for (let i = 1; i < timestampLabels.length ; i++) {
@@ -67,32 +70,49 @@ export class CryptoCurrencyLineGraph {
       timestamps.splice(0, timestamps.length - this.maxHistoryLength);
       timestampLabels.splice(0, timestampLabels.length - this.maxHistoryLength);
     }
-    return this.exchangeNames.map((exchangeName) => {
+    const graphData: ILineGraphData[] = [];
+    this.exchangeNames.forEach((exchangeName) => {
       // Set graphOptions
       let options: ILineGraphOptions = this.defaultOptions;
       if (graphOptions.options.hasOwnProperty(exchangeName)) {
         options = graphOptions.options[exchangeName];
       }
-      // Get plotted datapoints
-      const datapoints: number[] = prices.map((price: IMarketPrice) => {
-        if (price.exchangePrices.hasOwnProperty(exchangeName)) {
-          if (graphOptions.isBuyingPrice) {
-            return price.exchangePrices[exchangeName].buyingPrice;
-          } else {
-            return price.exchangePrices[exchangeName].sellingPrice;
-          }
-        } else {
-          return 0;
-        }
-      });
-      return {
-        style: options,
-        title: exchangeName,
-        x: timestampLabels,
-        y: datapoints,
-      } as ILineGraphData;
+      if (graphOptions.isAskPrice) {
+        graphData.push({
+          style: options,
+          title: exchangeName + " (B)",
+          x: timestampLabels,
+          y: this.getDatapointsFromExchange(exchangeName, true, prices),
+        } as ILineGraphData);
+      }
+      if (graphOptions.isBidPrice) {
+        graphData.push({
+          style: options,
+          title: exchangeName + " (S)",
+          x: timestampLabels,
+          y: this.getDatapointsFromExchange(exchangeName, false, prices),
+        } as ILineGraphData);
+      }
     });
+    return graphData;
   }
+
+  private getDatapointsFromExchange = (
+    exchangeName: string,
+    isAskPrice: boolean,
+    prices: IMarketPrice[],
+  ) =>
+    prices.map((price: IMarketPrice) => {
+      if (price.exchangePrices.hasOwnProperty(exchangeName)) {
+        if (isAskPrice) {
+          return price.exchangePrices[exchangeName].askPrice;
+        } else {
+          return price.exchangePrices[exchangeName].bidPrice;
+        }
+      } else {
+        return 0;
+      }
+    })
 
   private getLabelFromTimestamp = (ts: number) => {
     const date: Date = new Date(ts);

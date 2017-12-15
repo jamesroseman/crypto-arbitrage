@@ -74,10 +74,10 @@ export function getTickerUpdateFromMsgData(msgData: number[], currPair: ICurrenc
   }
   const now: Date = new Date();
   return {
-    buyingPrice: msgData[3],
+    askPrice: msgData[3],
+    bidPrice: msgData[1],
     cryptoCurrency: currPair.cryptoCurrency,
     currency: currPair.currency,
-    sellingPrice: msgData[1],
     timestamp: now.getTime(),
   } as ITickerUpdate;
 }

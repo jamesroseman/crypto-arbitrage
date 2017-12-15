@@ -83,10 +83,10 @@ export function getTickerUpdateFromOKCoinUpdate(okUpdate: IOKCoinTickerUpdate): 
   const currencyPair: ICurrencyPair = getCurrencyPairFromChannel(okUpdate.channel);
   const now: Date = new Date();
   return {
-    buyingPrice: parseInt(okUpdate.data.buy, 10),
+    askPrice: parseInt(okUpdate.data.sell, 10),
+    bidPrice: parseInt(okUpdate.data.buy, 10),
     cryptoCurrency: currencyPair.cryptoCurrency,
     currency: currencyPair.currency,
-    sellingPrice: parseInt(okUpdate.data.sell, 10),
     timestamp: now.getTime(),
   } as ITickerUpdate;
 }

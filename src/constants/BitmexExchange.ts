@@ -104,10 +104,10 @@ export function getTickerUpdateFromBitmexUpdate(
     bmexData.bidPrice = xbtToCurr(bmexData.bidPrice);
   }
   return {
-    buyingPrice: bmexData.askPrice,
+    askPrice: bmexData.askPrice,
+    bidPrice: bmexData.bidPrice,
     cryptoCurrency: currencyPair.cryptoCurrency,
     currency: currencyPair.currency,
-    sellingPrice: bmexData.bidPrice,
     timestamp: updateDate.getTime(),
   } as ITickerUpdate;
 }

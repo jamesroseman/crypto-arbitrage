@@ -27,7 +27,7 @@ export class OKCoinExchange implements IExchange {
 
   public streamTickerPrices = (req: ExchangeStreamTickerRequest): void => {
     this.onTickerUpdate = req.onTickerUpdate;
-    this.state = new ExchangeState(this.name, req.cryptoCurrencies, req.maxHistoryLength);
+    this.state = new ExchangeState(this.name, req.cryptoCurrencies);
     this.wss.onopen = () => {
       req.cryptoCurrencies.forEach((crypto) => {
         this.wss.send(assembleTickerSubscriptionMsg(crypto, req.currency));
