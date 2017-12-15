@@ -38,7 +38,6 @@ const onTickerUpdate = (update: ITickerUpdate, state: IExchangeState) => {
   const msg: string = date.toLocaleTimeString() + " " + update.buyingPrice + " (" + state.name + ")";
   if (update.cryptoCurrency === CryptoCurrencies.Bitcoin) {
     btcLog.log(msg);
-    btcGraph.setData(btcLineGraph.getLineGraphData(btcLineGraphOptions));
   } else if (update.cryptoCurrency === CryptoCurrencies.Ethereum) {
     // Update the log
     ethLog.log(msg);
@@ -88,18 +87,18 @@ const grid = new contrib.grid({ rows: 2, cols: 3, screen });
 const btcGraph = grid.set(0, 0, 1, 3, contrib.line, {
   label: "BTC Buying Price",
   legend: { width: 12 },
-  minY: 16710,
+  minY: 650,
   showLegend: true,
 });
 
 const btcLineGraph: CryptoCurrencyLineGraph = new CryptoCurrencyLineGraph(
-  CryptoCurrencies.Bitcoin,
+  CryptoCurrencies.Ethereum,
   exchangeNames,
   market,
   MAX_HISTORY_LENGTH,
 );
 const btcLineGraphOptions: ICryptoCurrencyLineGraphOptions = {
-  isBuyingPrice: true,
+  isBuyingPrice: false,
   options: {
     BTFNX: btcLineGraph.createOptionsFromColor("red"),
     BTMX: btcLineGraph.createOptionsFromColor("blue"),
@@ -107,6 +106,8 @@ const btcLineGraphOptions: ICryptoCurrencyLineGraphOptions = {
     OKCOIN: btcLineGraph.createOptionsFromColor("yellow"),
   },
 } as ICryptoCurrencyLineGraphOptions;
+
+setInterval(() => btcGraph.setData(btcLineGraph.getLineGraphData(btcLineGraphOptions)), 1000);
 
 const btcLog = grid.set(1, 0, 1, 1, contrib.log, {
   fg: "red",

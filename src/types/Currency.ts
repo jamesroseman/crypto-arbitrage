@@ -9,6 +9,12 @@ export enum CryptoCurrencies {
   Litecoin = "LTC",
 }
 
+export const AllCryptoCurrencies: CryptoCurrencies[] = [
+  CryptoCurrencies.Bitcoin,
+  CryptoCurrencies.Ethereum,
+  CryptoCurrencies.Litecoin,
+];
+
 export interface ICurrencyPair {
   cryptoCurrency: CryptoCurrencies;
   currency: Currencies;

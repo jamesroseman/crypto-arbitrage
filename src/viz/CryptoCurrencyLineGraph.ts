@@ -49,14 +49,23 @@ export class CryptoCurrencyLineGraph {
   }
 
   public getLineGraphData = (graphOptions: ICryptoCurrencyLineGraphOptions) => {
-    // Trim to the proper size
-    let prices = this.marketState.prices;
-    if (prices.length > this.maxHistoryLength) {
-      prices = prices.slice(prices.length - this.maxHistoryLength);
+    // Get the timestamp labels
+    const prices = this.marketState[this.cryptoCurrency].prices;
+    const timestamps = this.marketState[this.cryptoCurrency].timestamps;
+    const timestampLabels: string[] = timestamps.map(this.getLabelFromTimestamp);
+    // De-dupe prices and timestamps
+    for (let i = 1; i < timestampLabels.length ; i++) {
+      if (timestampLabels[i] === timestampLabels[i - 1]) {
+        prices.splice(i, i);
+        timestamps.splice(i, i);
+        timestampLabels.splice(i, i);
+      }
     }
-    let timestamps = this.marketState.timestamps;
+    // Trim prices and timestamps, to keep under max
     if (timestamps.length > this.maxHistoryLength) {
-      timestamps = timestamps.slice(timestamps.length - this.maxHistoryLength);
+      prices.splice(0, prices.length - this.maxHistoryLength);
+      timestamps.splice(0, timestamps.length - this.maxHistoryLength);
+      timestampLabels.splice(0, timestampLabels.length - this.maxHistoryLength);
     }
     return this.exchangeNames.map((exchangeName) => {
       // Set graphOptions
@@ -79,7 +88,7 @@ export class CryptoCurrencyLineGraph {
       return {
         style: options,
         title: exchangeName,
-        x: timestamps.map(this.getLabelFromTimestamp),
+        x: timestampLabels,
         y: datapoints,
       } as ILineGraphData;
     });

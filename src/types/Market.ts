@@ -15,9 +15,14 @@ export interface IMarketPrice {
   };
 }
 
-export interface IMarketState {
+export interface IMarketCurrencyState {
+  lastActiveTimestamp: number;
   prices: IMarketPrice[];
   timestamps: number[];
+}
+
+export interface IMarketState {
+  [cryptoCurrency: string]: IMarketCurrencyState;
 }
 
 export interface IMarket {
