@@ -15,12 +15,14 @@ import {
 export class Market implements IMarket {
   public state: IMarketState;
   private exchanges: IExchange[] = [];
+  private cryptos: CryptoCurrencies[];
 
-  constructor(exchanges: IExchange[]) {
+  constructor(exchanges: IExchange[], cryptos: CryptoCurrencies[]) {
     this.exchanges = exchanges;
     this.state = {} as IMarketState;
     // Initialize state to hold all cryptocurrencies
-    AllCryptoCurrencies.forEach((crypto: CryptoCurrencies) => {
+    this.cryptos = cryptos;
+    cryptos.forEach((crypto: CryptoCurrencies) => {
       this.state[crypto] = {
         lastActiveTimestamp: 0,
         prices: [],
@@ -45,7 +47,7 @@ export class Market implements IMarket {
       if (timestamp - this.state[CryptoCurrencies.Bitcoin].lastActiveTimestamp < 500) {
         return;
       }
-      AllCryptoCurrencies.forEach((crypto: CryptoCurrencies) => {
+      this.cryptos.forEach((crypto: CryptoCurrencies) => {
         this.state[crypto].lastActiveTimestamp = timestamp;
         let lowestPrice: number = Number.MAX_VALUE;
         const exchangePrices = {};

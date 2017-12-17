@@ -5,6 +5,7 @@ import {
   ITickerUpdate,
 } from "../types";
 
+// Warning: As of 12/15/2017 OKCoin is broken for US traders
 export const WSS_URL = "wss://real.okcoin.com:10440/websocket";
 const WSS_SUBSCRIBE_EVENT = "addChannel";
 
@@ -83,8 +84,8 @@ export function getTickerUpdateFromOKCoinUpdate(okUpdate: IOKCoinTickerUpdate): 
   const currencyPair: ICurrencyPair = getCurrencyPairFromChannel(okUpdate.channel);
   const now: Date = new Date();
   return {
-    askPrice: parseInt(okUpdate.data.sell, 10),
-    bidPrice: parseInt(okUpdate.data.buy, 10),
+    askPrice: parseFloat(okUpdate.data.sell),
+    bidPrice: parseFloat(okUpdate.data.buy),
     cryptoCurrency: currencyPair.cryptoCurrency,
     currency: currencyPair.currency,
     timestamp: now.getTime(),

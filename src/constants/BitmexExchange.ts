@@ -8,16 +8,20 @@ import {
 export const WSS_URL = "wss://www.bitmex.com/realtime";
 const WSS_SUBSCRIBE_EVENT = "subscribe";
 
-function cryptoPrefixFromCryptoCurrency(cryptoCurr: CryptoCurrencies) {
+function currenciesToInstrument(cryptoCurr: CryptoCurrencies, currency: Currencies) {
   switch (cryptoCurr) {
     case CryptoCurrencies.Bitcoin: {
-      return "XBT";
+      if (currency === Currencies.USD) {
+        return "XBTUSD";
+      } else {
+        throw new Error("Unimplemented Bitcoin-currency pairing.");
+      }
     }
     case CryptoCurrencies.Ethereum: {
-      return "ETH";
+      return "ETHZ17";
     }
     case CryptoCurrencies.Litecoin: {
-      return "LTC";
+      return "LTCZ17";
     }
     default: {
       throw new Error("Invalid crypto-currency selected to translate to WSS crypto prefix.");
@@ -25,35 +29,22 @@ function cryptoPrefixFromCryptoCurrency(cryptoCurr: CryptoCurrencies) {
   }
 }
 
-function currPostfixFromCurrency(curr: Currencies) {
-  switch (curr) {
-    case Currencies.USD: {
-      return "USD";
-    }
-    default: {
-      throw new Error("Invalid currency selected to translate to WSS currency postfix.");
-    }
-  }
-}
-
-function currenciesToInstrument(cryptoCurr: CryptoCurrencies, curr: Currencies) {
-  // BitMEX only trades XBT/USD, both ETH and LTC are /XBT instead of /USD
-  if (cryptoCurr === CryptoCurrencies.Bitcoin) {
-    return cryptoPrefixFromCryptoCurrency(cryptoCurr) + currPostfixFromCurrency(curr);
-  }
-  return cryptoPrefixFromCryptoCurrency(cryptoCurr);
-}
-
 export function assembleTickerSubscriptionMsg(cryptos: CryptoCurrencies[], curr: Currencies) {
-  const instruments = cryptos.map((crypto) => currenciesToInstrument(crypto, curr));
-  const quoteBooks = instruments.map((i) => "quote:" + i);
-  if (!(CryptoCurrencies.Bitcoin in cryptos) && curr !== Currencies.XBT) {
+  const action: string = "quote:";
+  const instruments: string[] = cryptos.map((crypto) => currenciesToInstrument(crypto, curr));
+  const args: string[] = [];
+  instruments.forEach((i) => {
+    args.push(action + i);
+    args.push("instrument:" + i);
+  });
+  if (cryptos.filter((c) => CryptoCurrencies.Bitcoin === c).length <= 0) {
     // We always need a XBT/USD quote because ETH and LTC are only quoted in XBT
-    quoteBooks.push("quote:XBTUSD");
+    args.push(action + "XBTUSD");
+    args.push("instrument:XBTUSD");
   }
 
   return JSON.stringify({
-    args: quoteBooks,
+    args,
     op: WSS_SUBSCRIBE_EVENT,
   });
 }
@@ -96,8 +87,8 @@ export function getTickerUpdateFromBitmexUpdate(
   bmexUpdate: IBitmexTickerUpdate,
   xbtToCurr: (price: number) => number = (price) => price,
 ): ITickerUpdate {
-  const currencyPair: ICurrencyPair = getCurrencyPairFromSymbol(bmexUpdate.data[0].symbol);
   const bmexData = bmexUpdate.data[0];
+  const currencyPair: ICurrencyPair = getCurrencyPairFromSymbol(bmexData.symbol);
   const updateDate: Date = new Date(bmexData.timestamp);
   if (currencyPair.cryptoCurrency !== CryptoCurrencies.Bitcoin && currencyPair.currency !== Currencies.XBT) {
     bmexData.askPrice = xbtToCurr(bmexData.askPrice);

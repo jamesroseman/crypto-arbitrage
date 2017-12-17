@@ -19,23 +19,23 @@ export class BitfinexExchange implements IExchange {
   public name: string;
   public onTickerUpdate: (update: ITickerUpdate, state: IExchangeState) => void;
   public state: ExchangeState;
-  private wss: WebSocket;
+  private ws: WebSocket;
   private channelMap: { [key: string]: ICurrencyPair } = {};
   private cryptos: CryptoCurrencies[];
 
   constructor(name: string) {
     this.name = name;
-    this.wss = new WebSocket(WSS_URL);
-    this.wss.onmessage = this.deconstructMsg;
+    this.ws = new WebSocket(WSS_URL);
+    this.ws.onmessage = this.deconstructMsg;
   }
 
   public streamTickerPrices = (req: ExchangeStreamTickerRequest): void => {
     this.onTickerUpdate = req.onTickerUpdate;
     this.cryptos = req.cryptoCurrencies;
     this.state = new ExchangeState(this.name, this.cryptos);
-    this.wss.onopen = () => {
+    this.ws.onopen = () => {
       req.cryptoCurrencies.forEach((crypto) => {
-        this.wss.send(assembleTickerSubscriptionMsg(crypto, req.currency));
+        this.ws.send(assembleTickerSubscriptionMsg(crypto, req.currency));
       });
     };
   }
@@ -45,6 +45,8 @@ export class BitfinexExchange implements IExchange {
     if (msgData.hasOwnProperty("event") && msgData.event === "subscribed") {
       // This is a Bitfinex subscription message
       this.channelMap[msgData.chanId] = getCurrencyPairFromMsg(msgData.pair);
+    } else if (msgData.length === 2) {
+      // This is a Bitfinex heartbeat message
     } else if (msgData.length === 11) {
       // This is a Bitfinex ticker message
       const currencyPair: ICurrencyPair = this.channelMap[msgData[0]];

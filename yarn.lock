@@ -174,6 +174,16 @@ better-assert@~1.0.0:
   dependencies:
     callsite "1.0.0"
 
+big.js@^3.1.3:
+  version "3.2.0"
+  resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/big.js/-/big.js-3.2.0.tgz#a5fc298b81b9e0dca2e458824784b65c52ba588e"
+
+bitstamp-ws@^0.1.1:
+  version "0.1.1"
+  resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/bitstamp-ws/-/bitstamp-ws-0.1.1.tgz#27945849750129f9f73f804ea4249add391bfacd"
+  dependencies:
+    pusher-js "3.1.x"
+
 blessed-contrib@^4.8.5:
   version "4.8.5"
   resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/blessed-contrib/-/blessed-contrib-4.8.5.tgz#39796717c7fe3e4cb4b074cdc8ae2f9280e97ff8"
@@ -294,6 +304,10 @@ colors@1.0.3:
   version "1.0.3"
   resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/colors/-/colors-1.0.3.tgz#0433f44d809680fdeb60ed260f1b0c262e82a40b"
 
+colors@^1.0.3:
+  version "1.1.2"
+  resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/colors/-/colors-1.1.2.tgz#168a4701756b6a7f51a12ce0c97bfa28c084ed63"
+
 combined-stream@^1.0.5, combined-stream@~1.0.5:
   version "1.0.5"
   resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/combined-stream/-/combined-stream-1.0.5.tgz#938370a57b4a51dea2c77c15d5c5fdf895164009"
@@ -374,6 +388,10 @@ ecc-jsbn@~0.1.1:
   dependencies:
     jsbn "~0.1.0"
 
+emojis-list@^2.0.0:
+  version "2.1.0"
+  resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/emojis-list/-/emojis-list-2.1.0.tgz#4daa4d9db00f9819880c79fa457ae5b09a1fd389"
+
 engine.io-client@~3.1.0:
   version "3.1.4"
   resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/engine.io-client/-/engine.io-client-3.1.4.tgz#4fcf1370b47163bd2ce9be2733972430350d4ea1"
@@ -413,6 +431,14 @@ engine.io@~3.1.0:
   optionalDependencies:
     uws "~0.14.4"
 
+enhanced-resolve@^0.9.0:
+  version "0.9.1"
+  resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/enhanced-resolve/-/enhanced-resolve-0.9.1.tgz#4d6e689b3725f86090927ccc86cd9f1635b89e2e"
+  dependencies:
+    graceful-fs "^4.1.2"
+    memory-fs "^0.2.0"
+    tapable "^0.1.8"
+
 escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
@@ -451,6 +477,12 @@ fast-json-stable-stringify@^2.0.0:
   version "2.0.0"
   resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/fast-json-stable-stringify/-/fast-json-stable-stringify-2.0.0.tgz#d5142c0caee6b1189f87d3a76111064f86c8bbf2"
 
+faye-websocket@0.9.4:
+  version "0.9.4"
+  resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/faye-websocket/-/faye-websocket-0.9.4.tgz#885934c79effb0409549e0c0a3801ed17a40cdad"
+  dependencies:
+    websocket-driver ">=0.5.1"
+
 forever-agent@~0.6.1:
   version "0.6.1"
   resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/forever-agent/-/forever-agent-0.6.1.tgz#fbc71f0c41adeb37f96c577ad1ed42d8fdacca91"
@@ -487,6 +519,10 @@ glob@^7.1.1:
     minimatch "^3.0.4"
     once "^1.3.0"
     path-is-absolute "^1.0.0"
+
+graceful-fs@^4.1.2:
+  version "4.1.11"
+  resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/graceful-fs/-/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
 
 har-schema@^2.0.0:
   version "2.0.0"
@@ -541,6 +577,10 @@ homedir-polyfill@^1.0.1:
   resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/homedir-polyfill/-/homedir-polyfill-1.0.1.tgz#4c2bbc8a758998feebf5ed68580f76d46768b4bc"
   dependencies:
     parse-passwd "^1.0.0"
+
+http-parser-js@>=0.4.0:
+  version "0.4.9"
+  resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/http-parser-js/-/http-parser-js-0.4.9.tgz#ea1a04fb64adff0242e9974f297dd4c3cad271e1"
 
 http-signature@~1.2.0:
   version "1.2.0"
@@ -601,6 +641,10 @@ json-stringify-safe@~5.0.1:
   version "5.0.1"
   resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
 
+json5@^0.5.0:
+  version "0.5.1"
+  resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/json5/-/json5-0.5.1.tgz#1eade7acc012034ad84e2396767ead9fa5495821"
+
 jsprim@^1.2.2:
   version "1.4.1"
   resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/jsprim/-/jsprim-1.4.1.tgz#313e66bc1e5cc06e438bc1b7499c2e5c56acb6a2"
@@ -609,6 +653,15 @@ jsprim@^1.2.2:
     extsprintf "1.3.0"
     json-schema "0.2.3"
     verror "1.10.0"
+
+loader-utils@^0.2.6:
+  version "0.2.17"
+  resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/loader-utils/-/loader-utils-0.2.17.tgz#f86e6374d43205a6e6c60e9196f17c0299bfb348"
+  dependencies:
+    big.js "^3.1.3"
+    emojis-list "^2.0.0"
+    json5 "^0.5.0"
+    object-assign "^4.0.1"
 
 lodash.assign@^4.2.0:
   version "4.2.0"
@@ -646,6 +699,10 @@ marked-terminal@^1.5.0:
 marked@^0.3.3:
   version "0.3.7"
   resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/marked/-/marked-0.3.7.tgz#80ef3bbf1bd00d1c9cfebe42ba1b8c85da258d0d"
+
+memory-fs@^0.2.0:
+  version "0.2.0"
+  resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/memory-fs/-/memory-fs-0.2.0.tgz#f2bb25368bc121e391c2520de92969caee0a0290"
 
 memory-streams@^0.1.0:
   version "0.1.2"
@@ -710,6 +767,14 @@ nopt@~2.1.2:
 oauth-sign@~0.8.2:
   version "0.8.2"
   resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/oauth-sign/-/oauth-sign-0.8.2.tgz#46a6ab7f0aead8deae9ec0565780b7d4efeb9d43"
+
+object-assign@^2.0.0:
+  version "2.1.1"
+  resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/object-assign/-/object-assign-2.1.1.tgz#43c36e5d569ff8e4816c4efa8be02d26967c18aa"
+
+object-assign@^4.0.1:
+  version "4.1.1"
+  resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
 
 object-component@0.0.3:
   version "0.0.3"
@@ -781,6 +846,14 @@ punycode@^1.4.1:
   version "1.4.1"
   resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
 
+pusher-js@3.1.x:
+  version "3.1.0"
+  resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/pusher-js/-/pusher-js-3.1.0.tgz#94367cf70330dd984c680fa13cdcebff457b0789"
+  dependencies:
+    faye-websocket "0.9.4"
+    ts-loader "^0.8.1"
+    xmlhttprequest "^1.8.0"
+
 qs@~6.5.1:
   version "6.5.1"
   resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/qs/-/qs-6.5.1.tgz#349cdf6eef89ec45c12d7d5eb3fc0c870343a6d8"
@@ -845,7 +918,7 @@ sax@>=0.6.0:
   version "1.2.4"
   resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
 
-semver@^5.3.0:
+semver@^5.0.1, semver@^5.3.0:
   version "5.4.1"
   resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/semver/-/semver-5.4.1.tgz#e059c09d8571f0540823733433505d3a2f00b18e"
 
@@ -959,6 +1032,10 @@ supports-color@^4.0.0:
   dependencies:
     has-flag "^2.0.0"
 
+tapable@^0.1.8:
+  version "0.1.10"
+  resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/tapable/-/tapable-0.1.10.tgz#29c35707c2b70e50d07482b5d202e8ed446dafd4"
+
 term-canvas@0.0.5:
   version "0.0.5"
   resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/term-canvas/-/term-canvas-0.0.5.tgz#597afac2fa6369a6f17860bce9c5f66d6ea0ca96"
@@ -972,6 +1049,17 @@ tough-cookie@~2.3.3:
   resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/tough-cookie/-/tough-cookie-2.3.3.tgz#0b618a5565b6dea90bf3425d04d55edc475a7561"
   dependencies:
     punycode "^1.4.1"
+
+ts-loader@^0.8.1:
+  version "0.8.2"
+  resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/ts-loader/-/ts-loader-0.8.2.tgz#7331296d13d5b3105cd905cebca39143eed2b255"
+  dependencies:
+    arrify "^1.0.0"
+    colors "^1.0.3"
+    enhanced-resolve "^0.9.0"
+    loader-utils "^0.2.6"
+    object-assign "^2.0.0"
+    semver "^5.0.1"
 
 ts-node@^4.0.1:
   version "4.0.1"
@@ -1077,6 +1165,17 @@ web-request@^1.0.7:
   dependencies:
     request "^2.69.0"
 
+websocket-driver@>=0.5.1:
+  version "0.7.0"
+  resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/websocket-driver/-/websocket-driver-0.7.0.tgz#0caf9d2d755d93aee049d4bdd0d3fe2cca2a24eb"
+  dependencies:
+    http-parser-js ">=0.4.0"
+    websocket-extensions ">=0.1.1"
+
+websocket-extensions@>=0.1.1:
+  version "0.1.3"
+  resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/websocket-extensions/-/websocket-extensions-0.1.3.tgz#5d2ff22977003ec687a4b87073dfbbac146ccf29"
+
 "wordwrap@>=0.0.1 <0.1.0", wordwrap@~0.0.2:
   version "0.0.3"
   resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/wordwrap/-/wordwrap-0.0.3.tgz#a3d5da6cd5c0bc0008d37234bbaf1bed63059107"
@@ -1111,6 +1210,10 @@ xmlbuilder@~9.0.1:
 xmlhttprequest-ssl@~1.5.4:
   version "1.5.4"
   resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/xmlhttprequest-ssl/-/xmlhttprequest-ssl-1.5.4.tgz#04f560915724b389088715cc0ed7813e9677bf57"
+
+xmlhttprequest@^1.8.0:
+  version "1.8.0"
+  resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/xmlhttprequest/-/xmlhttprequest-1.8.0.tgz#67fe075c5c24fef39f9d65f5f7b7fe75171968fc"
 
 yeast@0.1.2:
   version "0.1.2"

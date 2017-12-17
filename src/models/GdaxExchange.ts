@@ -17,19 +17,19 @@ export class GdaxExchange implements IExchange {
   public name: string;
   public onTickerUpdate: (update: ITickerUpdate, state: IExchangeState) => void;
   public state: ExchangeState;
-  private wss: WebSocket;
+  private ws: WebSocket;
 
   constructor(name: string) {
     this.name = name;
-    this.wss = new WebSocket(WSS_URL);
-    this.wss.onmessage = this.deconstructMsg;
+    this.ws = new WebSocket(WSS_URL);
+    this.ws.onmessage = this.deconstructMsg;
   }
 
   public streamTickerPrices = (req: ExchangeStreamTickerRequest): void => {
     this.onTickerUpdate = req.onTickerUpdate;
     this.state = new ExchangeState(this.name, req.cryptoCurrencies);
-    this.wss.onopen = () => {
-      this.wss.send(assembleTickerSubscriptionMsg(req.cryptoCurrencies, req.currency));
+    this.ws.onopen = () => {
+      this.ws.send(assembleTickerSubscriptionMsg(req.cryptoCurrencies, req.currency));
     };
   }
 

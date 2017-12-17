@@ -13,24 +13,25 @@ import {
   ITickerUpdate,
 } from "../types";
 
+// Warning: As of 12/15/2017 OKCoin is broken for US traders
 export class OKCoinExchange implements IExchange {
   public name: string;
   public onTickerUpdate: (update: ITickerUpdate, state: IExchangeState) => void;
   public state: ExchangeState;
-  private wss: WebSocket;
+  private ws: WebSocket;
 
   constructor(name: string) {
     this.name = name;
-    this.wss = new WebSocket(WSS_URL);
-    this.wss.onmessage = this.deconstructMsg;
+    this.ws = new WebSocket(WSS_URL);
+    this.ws.onmessage = this.deconstructMsg;
   }
 
   public streamTickerPrices = (req: ExchangeStreamTickerRequest): void => {
     this.onTickerUpdate = req.onTickerUpdate;
     this.state = new ExchangeState(this.name, req.cryptoCurrencies);
-    this.wss.onopen = () => {
+    this.ws.onopen = () => {
       req.cryptoCurrencies.forEach((crypto) => {
-        this.wss.send(assembleTickerSubscriptionMsg(crypto, req.currency));
+        this.ws.send(assembleTickerSubscriptionMsg(crypto, req.currency));
       });
     };
   }

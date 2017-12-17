@@ -19,7 +19,7 @@ export class BitmexExchange implements IExchange {
   public name: string;
   public onTickerUpdate: (update: ITickerUpdate, state: IExchangeState) => void;
   public state: ExchangeState;
-  private wss: WebSocket;
+  private ws: WebSocket;
   private cryptos: CryptoCurrencies[];
   private currency: Currencies;
   private lastXbtBidPrice: number;
@@ -28,8 +28,8 @@ export class BitmexExchange implements IExchange {
 
   constructor(name: string) {
     this.name = name;
-    this.wss = new WebSocket(WSS_URL);
-    this.wss.onmessage = this.deconstructMsg;
+    this.ws = new WebSocket(WSS_URL);
+    this.ws.onmessage = this.deconstructMsg;
   }
 
   public streamTickerPrices = (req: ExchangeStreamTickerRequest): void => {
@@ -37,13 +37,18 @@ export class BitmexExchange implements IExchange {
     this.cryptos = req.cryptoCurrencies;
     this.state = new ExchangeState(this.name, this.cryptos);
     this.currency = req.currency;
-    this.wss.onopen = () => {
-      this.wss.send(assembleTickerSubscriptionMsg(req.cryptoCurrencies, req.currency));
+    this.ws.onopen = () => {
+      this.ws.send(assembleTickerSubscriptionMsg(req.cryptoCurrencies, req.currency));
     };
   }
 
   private deconstructMsg = (msg: any): void => {
-    const msgData = JSON.parse(msg.data);
+    let msgData;
+    try {
+      msgData = JSON.parse(msg.data);
+    } catch (e) {
+      console.error(e);
+    }
     if (msgData.hasOwnProperty("table") && msgData.table === "quote") {
       const tickerUpdate: ITickerUpdate = getTickerUpdateFromBitmexUpdate(msgData);
       // Check if this is a XBT/USD price we only need for translating XBT prices,
