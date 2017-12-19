@@ -34,7 +34,12 @@ export class GdaxExchange implements IExchange {
   }
 
   private deconstructMsg = (msg: any): void => {
-    const msgData = JSON.parse(msg.data);
+    let msgData;
+    try {
+      msgData = JSON.parse(msg.data);
+    } catch (e) {
+      console.error(e);
+    }
     if (msgData.type === "ticker") {
       const tickerUpdate: ITickerUpdate = getTickerUpdateFromGdaxUpdate(msgData);
       this.state.addTickerToState(tickerUpdate);

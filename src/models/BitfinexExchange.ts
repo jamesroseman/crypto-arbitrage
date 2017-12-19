@@ -41,7 +41,12 @@ export class BitfinexExchange implements IExchange {
   }
 
   private deconstructMsg = (msg: any): void => {
-    const msgData = JSON.parse(msg.data);
+    let msgData;
+    try {
+      msgData = JSON.parse(msg.data);
+    } catch (e) {
+      console.error(e);
+    }
     if (msgData.hasOwnProperty("event") && msgData.event === "subscribed") {
       // This is a Bitfinex subscription message
       this.channelMap[msgData.chanId] = getCurrencyPairFromMsg(msgData.pair);

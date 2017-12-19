@@ -37,7 +37,12 @@ export class OKCoinExchange implements IExchange {
   }
 
   private deconstructMsg = (msg: any): void => {
-    const msgData = JSON.parse(msg.data)[0];
+    let msgData;
+    try {
+      msgData = JSON.parse(msg.data)[0];
+    } catch (e) {
+      console.error(e);
+    }
     if (msgData.channel.startsWith("ok_sub_spot_")) {
       const tickerUpdate: ITickerUpdate = getTickerUpdateFromOKCoinUpdate(msgData);
       this.state.addTickerToState(tickerUpdate);

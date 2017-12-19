@@ -6,11 +6,13 @@
   "scripts": {
     "start": "ts-node ./src/index.ts",
     "lint": "tslint -c ./tslint.json src/**/*.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:watch": "npm test -- --watch"
   },
   "author": "James Roseman <jroseman@twitter.com>",
   "license": "ISC",
   "devDependencies": {
+    "@types/jest": "^21.1.8",
     "ts-node": "^4.0.1",
     "typescript": "^2.6.2",
     "web-request": "^1.0.7"
@@ -18,12 +20,26 @@
   "dependencies": {
     "@types/chalk": "^2.2.0",
     "@types/socket.io": "^1.4.31",
+    "babel-jest": "^22.0.1",
+    "babel-preset-es2015": "^6.24.1",
     "bitstamp-ws": "^0.1.1",
     "blessed": "^0.1.81",
     "blessed-contrib": "^4.8.5",
     "chalk": "^2.3.0",
+    "jest": "^22.0.1",
     "socket.io": "^2.0.4",
+    "ts-jest": "^22.0.0",
     "tslint": "^5.8.0",
     "ws": "^3.3.2"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "^.*test.*(ts|js)",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ]
   }
 }
