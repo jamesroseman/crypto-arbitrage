@@ -1,5 +1,5 @@
 Arguments: 
-  /opt/twitter_mde/package/nodejs/1b3f2173689247d43f0b38f276df588340c28e7f403a559e0410c5ad8d0659e9/bin/node /opt/twitter_mde/package/yarn/da19f52fe60e1ff49ea7734ac579454799bfbde933348552fe11b6c9e12130a6/bin/yarn.js test
+  /opt/twitter_mde/package/nodejs/1b3f2173689247d43f0b38f276df588340c28e7f403a559e0410c5ad8d0659e9/bin/node /opt/twitter_mde/package/yarn/da19f52fe60e1ff49ea7734ac579454799bfbde933348552fe11b6c9e12130a6/bin/yarn.js add @types/ws
 
 PATH: 
   /opt/twitter_mde/bin:/opt/twitter_mde/homebrew_minimal/mde_bin:/opt/twitter_mde/homebrew/mde_bin:/Users/jroseman/.rvm/gems/ruby-1.9.3-p327/bin:/Users/jroseman/.rvm/gems/ruby-1.9.3-p327@global/bin:/Users/jroseman/.rvm/rubies/ruby-1.9.3-p327/bin:/Users/jroseman/.rbenv/shims:/Users/jroseman/.rbenv/bin:/Users/jroseman/.tools-cache/home/aurora/tools/dottools/bin:/Users/jroseman/.tools-cache/home/capesospy/capesospy-v2/bin:/Users/jroseman/.tools-cache/home/heron/heron-cli/bin:/Users/jroseman/.tools-cache/home/devprod/release/tools/jira//bin:/Users/jroseman/.tools-cache/home/sgargenta/tools/source-utils/bin:/Users/jroseman/.tools-cache/home/packer/tools/packer/bin:/Users/jroseman/.tools-cache/home/aurora/tools/client/bin:/opt/twitter/bin:/opt/twitter/sbin:/usr/local/mysql/bin:/Users/jroseman/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/opt/X11/bin:/Users/jroseman/.rvm/bin:/opt/twitter_mde/data/node/bin:/Users/jroseman/.npm-global/bin
@@ -52,9 +52,10 @@ npm manifest:
       "transform": {
         "^.+\\.tsx?$": "ts-jest"
       },
-      "testRegex": "/.*\.(ts|js)",
+      "testRegex": "^.*test.*(ts|js)",
       "moduleFileExtensions": [
-        "ts"
+        "ts",
+        "js"
       ]
     }
   }
@@ -3865,10 +3866,6 @@ Lockfile:
     resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/yn/-/yn-2.0.0.tgz#e5adabc8acf408f6385fc76495684c88e6af689a"
 
 Trace: 
-  SyntaxError: /Users/jroseman/playbox/crypto-arbitrage/package.json: Unexpected token . in JSON at position 956
-      at JSON.parse (<anonymous>)
-      at /opt/twitter_mde/package/yarn/da19f52fe60e1ff49ea7734ac579454799bfbde933348552fe11b6c9e12130a6/lib/cli.js:770:59
-      at Generator.next (<anonymous>)
-      at step (/opt/twitter_mde/package/yarn/da19f52fe60e1ff49ea7734ac579454799bfbde933348552fe11b6c9e12130a6/lib/cli.js:92:30)
-      at /opt/twitter_mde/package/yarn/da19f52fe60e1ff49ea7734ac579454799bfbde933348552fe11b6c9e12130a6/lib/cli.js:103:13
-      at <anonymous>
+  Error: getaddrinfo ENOTFOUND artifactory.twitter.biz artifactory.twitter.biz:443
+      at errnoException (dns.js:50:10)
+      at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:92:26)

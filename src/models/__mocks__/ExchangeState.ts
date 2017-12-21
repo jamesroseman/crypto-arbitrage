@@ -1,31 +1,18 @@
-import { CryptoCurrencies, Currencies } from "./Currency";
-import { ITickerUpdate } from "./Ticker";
-
-export interface ICurrencyHistory {
-  latestAskPrice: number;
-  latestBidPrice: number;
-  lastTimestamp: number;
-}
-
-export interface IExchangeState {
-  currencies: {
-    [cryptoCurrency: string]: ICurrencyHistory;
-  };
-  name: string;
-}
+import {
+  CryptoCurrencies,
+  ICurrencyHistory,
+  IExchangeState,
+  ITickerUpdate,
+} from "../../types";
 
 export class ExchangeState implements IExchangeState {
   public currencies: { [cryptoCurrency: string]: ICurrencyHistory } = {};
   public name: string;
   public timestamps: number[] = [];
 
-  constructor(name: string) {
+  constructor(name: string, cryptoCurrencies: CryptoCurrencies[]) {
     this.name = name;
-    [
-      CryptoCurrencies.Bitcoin,
-      CryptoCurrencies.Ethereum,
-      CryptoCurrencies.Litecoin,
-    ].map((cryptoCurr) => {
+    cryptoCurrencies.map((cryptoCurr) => {
       this.currencies[cryptoCurr] = {
         latestAskPrice: 0,
         latestBidPrice: 0,

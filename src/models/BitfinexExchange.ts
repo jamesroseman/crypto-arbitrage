@@ -7,6 +7,7 @@ import {
 } from "../constants/BitfinexExchange";
 import {
   CryptoCurrencies,
+  Exchange,
   ExchangeState,
   ExchangeStreamTickerRequest,
   ICurrencyPair,
@@ -15,7 +16,7 @@ import {
   ITickerUpdate,
 } from "../types";
 
-export class BitfinexExchange implements IExchange {
+export class BitfinexExchange extends Exchange {
   public name: string;
   public onTickerUpdate: (update: ITickerUpdate, state: IExchangeState) => void;
   public state: ExchangeState;
