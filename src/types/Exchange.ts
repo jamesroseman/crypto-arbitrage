@@ -23,8 +23,6 @@ export abstract class Exchange implements IExchange {
     name: string,
     getCurrencyPairFromMsg: (msg: string) => ICurrencyPair,
     getTickerUpdateFromMsg: (msg: string, currPair: ICurrencyPair, state: ExchangeState) => ITickerUpdate,
-    isHeartbeatMsg: (msg: string) => boolean,
-    isTickerMsg: (msg: string) => boolean,
     onTickerUpdate: (update: ITickerUpdate, state: ExchangeState) => void,
     state?: ExchangeState,
   ) {

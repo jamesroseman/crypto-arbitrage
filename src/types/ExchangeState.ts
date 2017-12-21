@@ -1,5 +1,5 @@
 import { CryptoCurrencies, Currencies } from "./Currency";
-import { ITickerUpdate } from "./Ticker";
+import { ITickerUpdate } from "./TickerUpdate";
 
 export interface ICurrencyHistory {
   latestAskPrice: number;

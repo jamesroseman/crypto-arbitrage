@@ -1,5 +1,6 @@
+import { CryptoCurrencies, Currencies, ICurrencyPair } from "./Currency";
 import { Exchange } from "./Exchange";
-import { ExchangeState, ICurrencyPair } from "./ExchangeState";
+import { ExchangeState } from "./ExchangeState";
 import { ITickerUpdate } from "./TickerUpdate";
 
 const validNonHeartbeatNonTickerMsg: string = "VALID_NON_HB_NON_TICKER";
@@ -24,9 +25,6 @@ class TestExchange extends Exchange {
       onTickerUpdate,
       state,
     );
-    this.isValidMsg = isValidMsg;
-    this.isHeartbeatMsg = isHeartbeatMsg;
-    this.isTickerMsg = isTickerMsg;
   }
 
   public isValidMsg(msg: string) {
@@ -48,20 +46,16 @@ class TestExchange extends Exchange {
 }
 
 describe("Exchange", () => {
-  let testExchange: Exchange;
+  let testExchange: TestExchange;
+  const testExchangeName: string = "TestExchange";
+  const getCurrencyPairFromMsg = (msg: string) => ({
+    cryptoCurrency: CryptoCurrencies.Bitcoin,
+    currency: Currencies.USD,
+  } as ICurrencyPair);
 
   beforeAll(() => {
-    const testName: string = "Test Exchange";
-    const testGetCurrencyPairFromMsg = jest.fn();
-    const testGetTickerUpdateFromMsg = jest.fn();
-    const testOnTickerUpdate = jest.fn();
-    testExchange = new Exchange(
-      testName,
-      testGetCurrencyPairFromMsg,
-      testGetTickerUpdateFromMsg,
-      testOnTickerUpdate,
-    );
-  });
+    testExchange = new TestExchange()
+  })
 
   describe("deconstructMsg", () => {
 
