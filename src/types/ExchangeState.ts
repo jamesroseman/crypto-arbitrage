@@ -11,13 +11,13 @@ export interface IExchangeState {
   currencies: {
     [cryptoCurrency: string]: ICurrencyHistory;
   };
-  name: string;
+  getName(): string;
 }
 
 export class ExchangeState implements IExchangeState {
   public currencies: { [cryptoCurrency: string]: ICurrencyHistory } = {};
-  public name: string;
   public timestamps: number[] = [];
+  protected name: string;
 
   constructor(name: string) {
     this.name = name;
@@ -31,6 +31,10 @@ export class ExchangeState implements IExchangeState {
         latestBidPrice: 0,
       } as ICurrencyHistory;
     });
+  }
+
+  public getName = () => {
+    return this.name;
   }
 
   public addTickerToState = (update: ITickerUpdate) => {

@@ -8,23 +8,78 @@ import { ITickerUpdate } from "./TickerUpdate";
 jest.mock("./ExchangeState");
 
 describe("Exchange", () => {
-  const testExchangeName: string = "TestExchange";
-  const testGetCurrencyPairFromMsg = (msg: string) => ({
-    cryptoCurrency: CryptoCurrencies.Bitcoin,
-    currency: Currencies.USD,
-  } as ICurrencyPair);
-  const testAskPrice: number = 10;
-  const testBidPrice: number = 20;
-  const testTimestamp: number = new Date().getTime();
-  const testGetTickerUpdateFromMsg = (msg: string, currPair: ICurrencyPair, state: ExchangeState) => ({
-    askPrice: testAskPrice,
-    bidPrice: testBidPrice,
-    cryptoCurrency: currPair.cryptoCurrency,
-    currency: currPair.currency,
-    timestamp: testTimestamp,
-  } as ITickerUpdate);
+  describe("getName", () => {
+    it("should get the set name", () => {
+      const testExchangeName: string = "GetNameExchange";
+      class GetNameExchange extends Exchange {
+        constructor() {
+          super(
+            testExchangeName,
+            jest.fn(),
+            jest.fn(),
+            jest.fn(),
+          );
+        }
+        public isValidMsg(msg: string) { return false; }
+        public isHeartbeatMsg(msg: string) { return false; }
+        public isTickerMsg(msg: string) { return false; }
+        public initializeExchangeConnection() { return true; }
+        public initializeExchangeTicker() { return true; }
+      }
+      const testExchange: GetNameExchange = new GetNameExchange();
+      expect(testExchange.getName()).toBe(testExchangeName);
+    });
+  });
 
-  describe("deconstructMsg", () => {
+  describe("getState", () => {
+    it("should get the state passed into the constructor", () => {
+      const testExchangeStateName: string = "GetStateExchangeState";
+      const mockExchangeState: ExchangeState = new ExchangeState(testExchangeStateName);
+      const testExchangeName: string = "GetStateExchange";
+      class GetStateExchange extends Exchange {
+        constructor() {
+          super(
+            testExchangeName,
+            jest.fn(),
+            jest.fn(),
+            jest.fn(),
+            mockExchangeState,
+          );
+        }
+        public isValidMsg(msg: string) { return false; }
+        public isHeartbeatMsg(msg: string) { return false; }
+        public isTickerMsg(msg: string) { return false; }
+        public initializeExchangeConnection() { return true; }
+        public initializeExchangeTicker() { return true; }
+      }
+      const testExchange: GetStateExchange = new GetStateExchange();
+      expect(testExchange.getState()).toEqual(mockExchangeState);
+    });
+
+    it("should get a new state if no state passed into the constructor", () => {
+      const testExchangeStateName: string = "GetStateExchangeState";
+      const testExchangeName: string = "GetStateExchange";
+      class GetStateExchange extends Exchange {
+        constructor() {
+          super(
+            testExchangeName,
+            jest.fn(),
+            jest.fn(),
+            jest.fn(),
+          );
+        }
+        public isValidMsg(msg: string) { return false; }
+        public isHeartbeatMsg(msg: string) { return false; }
+        public isTickerMsg(msg: string) { return false; }
+        public initializeExchangeConnection() { return true; }
+        public initializeExchangeTicker() { return true; }
+      }
+      const testExchange: GetStateExchange = new GetStateExchange();
+      expect(testExchange.getState().getName()).toBe(testExchangeStateName);
+    });
+  });
+
+  describe("consumeMsg", () => {
     const mockOnTickerUpdate = jest.fn();
 
     beforeAll(() => {

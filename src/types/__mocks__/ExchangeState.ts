@@ -16,11 +16,15 @@ export interface IExchangeState {
 
 export class ExchangeState implements IExchangeState {
   public currencies: { [cryptoCurrency: string]: ICurrencyHistory } = {};
-  public name: string;
   public timestamps: number[] = [];
   public addTickerToState = jest.fn();
+  protected name: string;
 
   constructor(name: string) {
     this.name = name;
+  }
+
+  public getName = () => {
+    return this.name;
   }
 }

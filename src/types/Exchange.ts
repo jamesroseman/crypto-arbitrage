@@ -5,6 +5,7 @@ import { ExchangeStreamTickerRequest } from "./ExchangeStreamTickerRequest";
 import { ITickerUpdate } from "./TickerUpdate";
 
 export interface IExchange {
+  getName(): string;
   getState(): ExchangeState;
   isValidMsg(msg: string): boolean;
   isHeartbeatMsg(msg: string): boolean;
@@ -31,12 +32,16 @@ export abstract class Exchange implements IExchange {
     this.getCurrencyPairFromMsg = getCurrencyPairFromMsg,
     this.getTickerUpdateFromMsg = getTickerUpdateFromMsg,
     this.onTickerUpdate = onTickerUpdate;
-    this.state = state ? state : new ExchangeState(name);
+    this.state = state ? state : new ExchangeState(name + "State");
   }
 
   public abstract isValidMsg(msg: string): boolean;
   public abstract isHeartbeatMsg(msg: string): boolean;
   public abstract isTickerMsg(msg: string): boolean;
+
+  public getName = () => {
+    return this.name;
+  }
 
   public getState = () => {
     return this.state;
@@ -49,7 +54,6 @@ export abstract class Exchange implements IExchange {
       // Do something with HB msg
       return true;
     } else if (this.isTickerMsg(msg)) {
-      console.log("TICKER!");
       const currPair: ICurrencyPair = this.getCurrencyPairFromMsg(msg);
       const tickerUpdate: ITickerUpdate = this.getTickerUpdateFromMsg(msg, currPair, this.state);
       this.state.addTickerToState(tickerUpdate);
