@@ -5,6 +5,7 @@ import { ExchangeStreamTickerRequest } from "./ExchangeStreamTickerRequest";
 import { ITickerUpdate } from "./TickerUpdate";
 
 export interface IExchange {
+  getState(): ExchangeState;
   isValidMsg(msg: string): boolean;
   isHeartbeatMsg(msg: string): boolean;
   isTickerMsg(msg: string): boolean;
@@ -24,32 +25,38 @@ export abstract class Exchange implements IExchange {
     getCurrencyPairFromMsg: (msg: string) => ICurrencyPair,
     getTickerUpdateFromMsg: (msg: string, currPair: ICurrencyPair, state: ExchangeState) => ITickerUpdate,
     onTickerUpdate: (update: ITickerUpdate, state: ExchangeState) => void,
-    state?: ExchangeState,
+    state?: ExchangeState | undefined,
   ) {
     this.name = name;
     this.getCurrencyPairFromMsg = getCurrencyPairFromMsg,
     this.getTickerUpdateFromMsg = getTickerUpdateFromMsg,
     this.onTickerUpdate = onTickerUpdate;
-    state = state ? state : new ExchangeState(name);
+    this.state = state ? state : new ExchangeState(name);
   }
 
   public abstract isValidMsg(msg: string): boolean;
   public abstract isHeartbeatMsg(msg: string): boolean;
   public abstract isTickerMsg(msg: string): boolean;
 
-  public deconstructMsg = (msg: string): boolean => {
+  public getState = () => {
+    return this.state;
+  }
+
+  public consumeMsg = (msg: string): boolean => {
     if (!this.isValidMsg(msg)) {
-      return true;
+      return false;
     } else if (this.isHeartbeatMsg(msg)) {
       // Do something with HB msg
-      return false;
+      return true;
     } else if (this.isTickerMsg(msg)) {
+      console.log("TICKER!");
       const currPair: ICurrencyPair = this.getCurrencyPairFromMsg(msg);
       const tickerUpdate: ITickerUpdate = this.getTickerUpdateFromMsg(msg, currPair, this.state);
       this.state.addTickerToState(tickerUpdate);
       this.onTickerUpdate(tickerUpdate, this.state);
       return true;
     }
+    return false;
   }
 
   protected abstract initializeExchangeConnection(): boolean;
