@@ -1,45 +1,42 @@
 import { CryptoCurrencies, Currencies } from "./Currency";
 import { ITickerUpdate } from "./TickerUpdate";
 
-export interface ICurrencyHistory {
-  latestAskPrice: number;
-  latestBidPrice: number;
-  lastTimestamp: number;
-}
-
 export interface IExchangeState {
-  currencies: {
-    [cryptoCurrency: string]: ICurrencyHistory;
-  };
+  createInitialTickerUpdate(cryptoCurrency: CryptoCurrencies): ITickerUpdate;
   getName(): string;
+  getLatestTickerUpdate(cryptoCurrency: CryptoCurrencies): ITickerUpdate;
 }
 
 export class ExchangeState implements IExchangeState {
-  public currencies: { [cryptoCurrency: string]: ICurrencyHistory } = {};
-  public timestamps: number[] = [];
+  protected latestTickerUpdateByCrypto: { [cryptoCurrency: string]: ITickerUpdate } = {};
   protected name: string;
 
   constructor(name: string) {
     this.name = name;
-    [
-      CryptoCurrencies.Bitcoin,
-      CryptoCurrencies.Ethereum,
-      CryptoCurrencies.Litecoin,
-    ].map((cryptoCurr) => {
-      this.currencies[cryptoCurr] = {
-        latestAskPrice: 0,
-        latestBidPrice: 0,
-      } as ICurrencyHistory;
+    [CryptoCurrencies.Bitcoin, CryptoCurrencies.Ethereum, CryptoCurrencies.Litecoin].forEach((cryptoCurr) => {
+      this.latestTickerUpdateByCrypto[cryptoCurr] = this.createInitialTickerUpdate(cryptoCurr);
     });
+  }
+
+  public createInitialTickerUpdate = (cryptoCurrency: CryptoCurrencies) => {
+    return {
+      askPrice: 0,
+      bidPrice: 0,
+      cryptoCurrency,
+      currency: Currencies.USD,
+      timestamp: 0,
+    } as ITickerUpdate;
   }
 
   public getName = () => {
     return this.name;
   }
 
+  public getLatestTickerUpdate = (cryptoCurrency: CryptoCurrencies) => {
+    return this.latestTickerUpdateByCrypto[cryptoCurrency];
+  }
+
   public addTickerToState = (update: ITickerUpdate) => {
-    this.currencies[update.cryptoCurrency.toString()].latestAskPrice = update.askPrice;
-    this.currencies[update.cryptoCurrency.toString()].latestBidPrice = update.bidPrice;
-    this.currencies[update.cryptoCurrency.toString()].lastTimestamp = update.timestamp;
+    this.latestTickerUpdateByCrypto[update.cryptoCurrency] = update;
   }
 }

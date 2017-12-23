@@ -1,6 +1,5 @@
 import { CryptoCurrencies, Currencies } from "./Currency";
-import { IStreamTickerRequest } from "./Exchange";
-import { IExchangeState } from "./ExchangeState";
+import { IStreamTickerRequest } from "./ExchangeStreamTickerRequest";
 
 export interface IExchangePrice {
   askPrice: number;
