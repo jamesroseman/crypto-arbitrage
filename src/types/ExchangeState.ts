@@ -8,8 +8,8 @@ export interface IExchangeState {
 }
 
 export class ExchangeState implements IExchangeState {
-  protected latestTickerUpdateByCrypto: { [cryptoCurrency: string]: ITickerUpdate } = {};
-  protected name: string;
+  private latestTickerUpdateByCrypto: { [cryptoCurrency: string]: ITickerUpdate } = {};
+  private name: string;
 
   constructor(name: string) {
     this.name = name;

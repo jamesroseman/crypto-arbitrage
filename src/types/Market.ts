@@ -1,31 +1,23 @@
 import { CryptoCurrencies, Currencies } from "./Currency";
+import { Exchange } from "./Exchange";
+import { ExchangeState } from "./ExchangeState";
 import { IStreamTickerRequest } from "./ExchangeStreamTickerRequest";
-
-export interface IExchangePrice {
-  askPrice: number;
-  bidPrice: number;
-  exchangeName: string;
-}
-
-export interface IMarketPrice {
-  timestamp: number;
-  exchangePrices: {
-    [exchangeName: string]: IExchangePrice;
-  };
-}
-
-export interface IMarketCurrencyState {
-  lastActiveTimestamp: number;
-  lowestPrice: number;
-  prices: IMarketPrice[];
-  timestamps: number[];
-}
-
-export interface IMarketState {
-  [cryptoCurrency: string]: IMarketCurrencyState;
-}
+import { ITickerUpdate } from "./TickerUpdate";
 
 export interface IMarket {
-  state: IMarketState;
   streamTickerPrices(req: IStreamTickerRequest): void;
+}
+
+export class Market implements IMarket {
+  private exchanges: Exchange[] = [];
+
+  constructor(
+    exchanges: Exchange[],
+    onTickerUpdate: (update: ITickerUpdate, state: ExchangeState) => void,
+  ) {
+    this.exchanges = exchanges;
+    this.exchanges.forEach((e: Exchange) => {
+      const currentOnTickerUpdate = e.getOnTickerUpdate();
+    })
+  }
 }

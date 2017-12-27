@@ -5,11 +5,13 @@ import { ExchangeStreamTickerRequest } from "./ExchangeStreamTickerRequest";
 import { ITickerUpdate } from "./TickerUpdate";
 
 export interface IExchange {
+  consumeMsg(msg: string): boolean;
   getName(): string;
   getState(): ExchangeState;
   isValidMsg(msg: string): boolean;
   isHeartbeatMsg(msg: string): boolean;
   isTickerMsg(msg: string): boolean;
+  setOnTickerUpdate(onUpdate: (update: ITickerUpdate, state: ExchangeState) => void): boolean;
 }
 
 export abstract class Exchange implements IExchange {
@@ -39,14 +41,6 @@ export abstract class Exchange implements IExchange {
   public abstract isHeartbeatMsg(msg: string): boolean;
   public abstract isTickerMsg(msg: string): boolean;
 
-  public getName = () => {
-    return this.name;
-  }
-
-  public getState = () => {
-    return this.state;
-  }
-
   public consumeMsg = (msg: string): boolean => {
     if (!this.isValidMsg(msg)) {
       return false;
@@ -61,6 +55,23 @@ export abstract class Exchange implements IExchange {
       return true;
     }
     return false;
+  }
+
+  public getOnTickerUpdate = () => {
+    return this.onTickerUpdate;
+  }
+
+  public getName = () => {
+    return this.name;
+  }
+
+  public getState = () => {
+    return this.state;
+  }
+
+  public setOnTickerUpdate(onUpdate: (update: ITickerUpdate, state: ExchangeState) => void) {
+    this.onTickerUpdate = onUpdate;
+    return true;
   }
 
   protected abstract initializeExchangeConnection(): boolean;
