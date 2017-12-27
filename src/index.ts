@@ -26,7 +26,7 @@ import {
 
 // General configuration
 
-const MAX_HISTORY_LENGTH: number = 60;
+const MAX_HISTORY_LENGTH: number = (60 * 60 * 60);
 
 const cryptoCurrencies: CryptoCurrencies[] = [
   CryptoCurrencies.Bitcoin,
@@ -95,7 +95,7 @@ const exchanges: IExchange[] = [
   bitstampExchange,
   bitmexExchange,
   gdaxExchange,
-  okCoinExchange,
+  // okCoinExchange,
 ];
 const exchangeNames: string[] = exchanges.map((exchange) => exchange.name);
 const market: Market = new Market(exchanges, cryptoCurrencies);
