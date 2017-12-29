@@ -3,37 +3,49 @@ import { Exchange } from "./Exchange";
 import { IMarketUpdate } from "./MarketUpdate";
 import { ITickerUpdate } from "./TickerUpdate";
 
+export interface IMarketUpdatesByTimestamp {
+  [timestamp: number]: {
+    [crypto: string]: IMarketUpdate,
+  };
+}
+
 export interface IMarketState {
-  addTickerToState(tickerUpdate: ITickerUpdate): void;
-  createInitialTickerUpdate(exchanges: Exchange[]): IMarketUpdate;
   getExchanges(): Exchange[];
-  getLatestMarketUpdate(cryptoCurrency: CryptoCurrencies): IMarketUpdate;
-  getLatestTimestamp(): number;
-  getMarketUpdateFromTickerUpdate(update: ITickerUpdate): IMarketUpdate;
   getName(): string;
 }
 
 export class MarketState implements IMarketState {
-  private exchanges: Exchange[];
-  private latestTimestamp: number;
-  private marketUpdatesByTimestamp: {
-    [timestamp: number]: {
-      [crypto: string]: IMarketUpdate,
-    },
-  } = {};
-  private name: string;
-  private supportedCryptos: CryptoCurrencies[] =
-    [CryptoCurrencies.Bitcoin, CryptoCurrencies.Ethereum, CryptoCurrencies.Litecoin];
-
-  constructor(name: string, exchanges: Exchange[]) {
-    this.name = name;
-    this.exchanges = exchanges;
-    // [CryptoCurrencies.Bitcoin, CryptoCurrencies.Ethereum, CryptoCurrencies.Litecoin].forEach((cryptoCurr) => {
-    //   this.addTickerToState(this.createInitialTickerUpdate(cryptoCurr));
-    // });
+  public static createInitialMarketUpdate = (
+    cryptoCurrency: CryptoCurrencies,
+    exchanges: Exchange[],
+    timestamp: number,
+  ) => {
+    const exchangeToTickerMap: { [exchangeName: string]: ITickerUpdate } = {};
+    exchanges.forEach((exchange: Exchange) => {
+      exchangeToTickerMap[exchange.getName()] = MarketState.createInitialTickerUpdate(cryptoCurrency);
+    });
+    return {
+      cryptoCurrency,
+      timestamp,
+      updates: exchangeToTickerMap,
+    } as IMarketUpdate;
   }
 
-  public createInitialTickerUpdate = (cryptoCurrency: CryptoCurrencies) => {
+  public static createInitialMarketUpdatesByTimestamp = (
+    cryptos: CryptoCurrencies[],
+    exchanges: Exchange[],
+    timestamp: number,
+  ) => {
+    const initialMarketUpdateByCrypto: { [crypto: string]: IMarketUpdate } = {};
+    cryptos.forEach((crypto) => {
+      initialMarketUpdateByCrypto[crypto] = MarketState.createInitialMarketUpdate(crypto, exchanges, timestamp);
+    });
+    return {
+      [timestamp]: { ...initialMarketUpdateByCrypto },
+    } as IMarketUpdatesByTimestamp;
+  }
+
+  public static createInitialTickerUpdate = (cryptoCurrency: CryptoCurrencies) => {
     return {
       askPrice: 0,
       bidPrice: 0,
@@ -43,12 +55,26 @@ export class MarketState implements IMarketState {
     } as ITickerUpdate;
   }
 
-  public getExchanges = () => {
-    return this.exchanges;
+  private exchanges: Exchange[];
+  private latestTimestamp: number;
+  private marketUpdatesByTimestamp: IMarketUpdatesByTimestamp = {};
+  private name: string;
+  private supportedCryptos: CryptoCurrencies[] =
+    [CryptoCurrencies.Bitcoin, CryptoCurrencies.Ethereum, CryptoCurrencies.Litecoin];
+
+  constructor(name: string, exchanges: Exchange[]) {
+    this.name = name;
+    this.exchanges = exchanges;
+    const nowTimestamp: number = new Date().getTime();
+    this.marketUpdatesByTimestamp = MarketState.createInitialMarketUpdatesByTimestamp(
+      this.supportedCryptos,
+      this.exchanges,
+      nowTimestamp,
+    );
   }
 
-  public getMarketUpdateFromTickerUpdate = (update: ITickerUpdate) => {
-    const ts: number = update.timestamp;
+  public getExchanges = () => {
+    return this.exchanges;
   }
 
   public getName = () => {

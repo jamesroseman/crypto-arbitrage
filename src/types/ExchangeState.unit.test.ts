@@ -50,9 +50,7 @@ describe("ExchangeState", () => {
         currency: Currencies.USD,
         timestamp: 0,
       } as ITickerUpdate;
-      const testExchangeStateName: string = "any name";
-      const testExchangeState: ExchangeState = new ExchangeState(testExchangeStateName);
-      expect(testExchangeState.createInitialTickerUpdate(CryptoCurrencies.Bitcoin))
+      expect(ExchangeState.createInitialTickerUpdate(CryptoCurrencies.Bitcoin))
         .toEqual(expectedInitialBTCTickerUpdate);
     });
   });
