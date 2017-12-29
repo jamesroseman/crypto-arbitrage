@@ -76,10 +76,10 @@ export abstract class Exchange implements IExchange {
     return true;
   }
 
-  protected abstract initializeExchangeConnection(): void;
-
-  protected initialize() {
+  public initialize() {
     this.initializeExchangeConnection();
     this.initializeExchangeTicker();
   }
+
+  protected abstract initializeExchangeConnection(): void;
 }

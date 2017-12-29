@@ -13,7 +13,7 @@ export interface IMarketState {
 
 export interface IMarket {
   getAllTickerUpdates(exchange?: Exchange): ITickerUpdate[];
-  initializeExchangeTickers(): void;
+  initialize(): void;
 }
 
 export class Market implements IMarket {
@@ -45,9 +45,9 @@ export class Market implements IMarket {
     return this.state[exchange.getName()].tickerUpdates;
   }
 
-  public initializeExchangeTickers = () => {
+  public initialize = () => {
     this.exchanges.forEach((e: Exchange) => {
-      e.initializeExchangeTicker();
+      e.initialize();
     });
   }
 }
