@@ -8,6 +8,7 @@ export interface IExchange {
   consumeMsg(msg: string): boolean;
   getName(): string;
   getState(): ExchangeState;
+  initializeExchangeTicker(): void;
   isValidMsg(msg: string): boolean;
   isHeartbeatMsg(msg: string): boolean;
   isTickerMsg(msg: string): boolean;
@@ -37,6 +38,7 @@ export abstract class Exchange implements IExchange {
     this.state = state ? state : new ExchangeState(name + "State");
   }
 
+  public abstract initializeExchangeTicker(): void;
   public abstract isValidMsg(msg: string): boolean;
   public abstract isHeartbeatMsg(msg: string): boolean;
   public abstract isTickerMsg(msg: string): boolean;
@@ -74,8 +76,7 @@ export abstract class Exchange implements IExchange {
     return true;
   }
 
-  protected abstract initializeExchangeConnection(): boolean;
-  protected abstract initializeExchangeTicker(): boolean;
+  protected abstract initializeExchangeConnection(): void;
 
   protected initialize() {
     this.initializeExchangeConnection();
