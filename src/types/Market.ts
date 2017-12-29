@@ -31,14 +31,14 @@ export class Market implements IMarket {
       const currentOnTickerUpdate = e.getOnTickerUpdate();
       e.setOnTickerUpdate((update: ITickerUpdate, state: ExchangeState) => {
         this.onTickerUpdate(update, state);
-        this.addTickerToState(update);
+        this.addTickerToState(e, update);
         currentOnTickerUpdate(update, state);
       });
     });
   }
 
-  public addTickerToState = (update: ITickerUpdate) => {
-    this.state[exchange.getName()]
+  public addTickerToState = (exchange: Exchange, update: ITickerUpdate) => {
+    this.state[exchange.getName()].tickerUpdates.push(update);
   }
 
   public getAllTickerUpdates = (exchange?: Exchange) => {

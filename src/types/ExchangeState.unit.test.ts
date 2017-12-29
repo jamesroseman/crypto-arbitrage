@@ -5,6 +5,42 @@ import { ITickerUpdate } from "./TickerUpdate";
 jest.unmock("./ExchangeState");
 
 describe("ExchangeState", () => {
+  describe("addTickerToState", () => {
+    it("should get the updated ticker update when new update added", () => {
+      const testExchangeStateName: string = "any name";
+      const testExchangeState: ExchangeState = new ExchangeState(testExchangeStateName);
+      const newBTCTickerUpdate: ITickerUpdate = {
+        askPrice: 10,
+        bidPrice: 10,
+        cryptoCurrency: CryptoCurrencies.Bitcoin,
+        currency: Currencies.USD,
+        timestamp: 0,
+      };
+      const newETHTickerUpdate: ITickerUpdate = {
+        askPrice: 20,
+        bidPrice: 20,
+        cryptoCurrency: CryptoCurrencies.Ethereum,
+        currency: Currencies.USD,
+        timestamp: 0,
+      };
+      const newLTCTickerUpdate: ITickerUpdate = {
+        askPrice: 30,
+        bidPrice: 30,
+        cryptoCurrency: CryptoCurrencies.Litecoin,
+        currency: Currencies.USD,
+        timestamp: 0,
+      };
+      // Because TickerUpdate type includes timestamp but the expected and actual won't be
+      // instantiated at the same time in this test, we leave timestamps at 0 for convenience.
+      testExchangeState.addTickerToState(newBTCTickerUpdate);
+      expect(testExchangeState.getLatestTickerUpdate(CryptoCurrencies.Bitcoin)).toEqual(newBTCTickerUpdate);
+      testExchangeState.addTickerToState(newETHTickerUpdate);
+      expect(testExchangeState.getLatestTickerUpdate(CryptoCurrencies.Ethereum)).toEqual(newETHTickerUpdate);
+      testExchangeState.addTickerToState(newLTCTickerUpdate);
+      expect(testExchangeState.getLatestTickerUpdate(CryptoCurrencies.Litecoin)).toEqual(newLTCTickerUpdate);
+    });
+  });
+
   describe("createInitialTickerUpdate", () => {
     it("should return the initialTickerUpdate with provided cryptocurrency", () => {
       const expectedInitialBTCTickerUpdate = {
@@ -61,42 +97,6 @@ describe("ExchangeState", () => {
       expect(testExchangeState.getLatestTickerUpdate(CryptoCurrencies.Litecoin)).toEqual(initialLTCTickerUpdate);
     });
 
-    it("should get the updated ticker update when new update added", () => {
-      const testExchangeStateName: string = "any name";
-      const testExchangeState: ExchangeState = new ExchangeState(testExchangeStateName);
-      const newBTCTickerUpdate: ITickerUpdate = {
-        askPrice: 10,
-        bidPrice: 10,
-        cryptoCurrency: CryptoCurrencies.Bitcoin,
-        currency: Currencies.USD,
-        timestamp: 0,
-      };
-      const newETHTickerUpdate: ITickerUpdate = {
-        askPrice: 20,
-        bidPrice: 20,
-        cryptoCurrency: CryptoCurrencies.Ethereum,
-        currency: Currencies.USD,
-        timestamp: 0,
-      };
-      const newLTCTickerUpdate: ITickerUpdate = {
-        askPrice: 30,
-        bidPrice: 30,
-        cryptoCurrency: CryptoCurrencies.Litecoin,
-        currency: Currencies.USD,
-        timestamp: 0,
-      };
-      // Because TickerUpdate includes timestamp and they won't be instantiated at the same time,
-      // it's safe to leave the timestamp untested.
-      testExchangeState.addTickerToState(newBTCTickerUpdate);
-      expect(testExchangeState.getLatestTickerUpdate(CryptoCurrencies.Bitcoin)).toEqual(newBTCTickerUpdate);
-      testExchangeState.addTickerToState(newETHTickerUpdate);
-      expect(testExchangeState.getLatestTickerUpdate(CryptoCurrencies.Ethereum)).toEqual(newETHTickerUpdate);
-      testExchangeState.addTickerToState(newLTCTickerUpdate);
-      expect(testExchangeState.getLatestTickerUpdate(CryptoCurrencies.Litecoin)).toEqual(newLTCTickerUpdate);
-    });
-  });
-
-  describe("addTickerToState", () => {
     it("should get the updated ticker update when new update added", () => {
       const testExchangeStateName: string = "any name";
       const testExchangeState: ExchangeState = new ExchangeState(testExchangeStateName);

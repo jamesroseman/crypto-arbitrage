@@ -2,6 +2,7 @@ import { CryptoCurrencies, Currencies } from "./Currency";
 import { ITickerUpdate } from "./TickerUpdate";
 
 export interface IExchangeState {
+  addTickerToState(update: ITickerUpdate): void;
   createInitialTickerUpdate(cryptoCurrency: CryptoCurrencies): ITickerUpdate;
   getName(): string;
   getLatestTickerUpdate(cryptoCurrency: CryptoCurrencies): ITickerUpdate;
@@ -10,12 +11,18 @@ export interface IExchangeState {
 export class ExchangeState implements IExchangeState {
   private latestTickerUpdateByCrypto: { [cryptoCurrency: string]: ITickerUpdate } = {};
   private name: string;
+  private supportedCryptos: CryptoCurrencies[] =
+    [CryptoCurrencies.Bitcoin, CryptoCurrencies.Ethereum, CryptoCurrencies.Litecoin];
 
   constructor(name: string) {
     this.name = name;
-    [CryptoCurrencies.Bitcoin, CryptoCurrencies.Ethereum, CryptoCurrencies.Litecoin].forEach((cryptoCurr) => {
-      this.latestTickerUpdateByCrypto[cryptoCurr] = this.createInitialTickerUpdate(cryptoCurr);
+    this.supportedCryptos.forEach((cryptoCurr) => {
+      this.addTickerToState(this.createInitialTickerUpdate(cryptoCurr));
     });
+  }
+
+  public addTickerToState = (update: ITickerUpdate) => {
+    this.latestTickerUpdateByCrypto[update.cryptoCurrency] = update;
   }
 
   public createInitialTickerUpdate = (cryptoCurrency: CryptoCurrencies) => {
@@ -28,15 +35,11 @@ export class ExchangeState implements IExchangeState {
     } as ITickerUpdate;
   }
 
-  public getName = () => {
-    return this.name;
-  }
-
   public getLatestTickerUpdate = (cryptoCurrency: CryptoCurrencies) => {
     return this.latestTickerUpdateByCrypto[cryptoCurrency];
   }
 
-  public addTickerToState = (update: ITickerUpdate) => {
-    this.latestTickerUpdateByCrypto[update.cryptoCurrency] = update;
+  public getName = () => {
+    return this.name;
   }
 }
