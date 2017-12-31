@@ -1,17 +1,24 @@
 import { CryptoCurrencies, Currencies } from "./Currency";
 import { Exchange } from "./Exchange";
+import { ExchangeState } from "./ExchangeState";
 import { IMarketUpdate } from "./MarketUpdate";
 import { ITickerUpdate } from "./TickerUpdate";
 
+export interface IMarketUpdateByCrypto {
+  [crypto: string]: IMarketUpdate;
+}
+
 export interface IMarketUpdatesByTimestamp {
-  [timestamp: number]: {
-    [crypto: string]: IMarketUpdate,
-  };
+  [timestamp: number]: IMarketUpdateByCrypto;
 }
 
 export interface IMarketState {
+  addTickerToState(tickerUpdate: ITickerUpdate, exchangeName: string): void;
   getExchanges(): Exchange[];
+  getLatestMarketUpdateCryptoMap(): IMarketUpdateByCrypto;
+  getMarketUpdateCryptoMapByTimestamp(timestamp: number): IMarketUpdateByCrypto;
   getName(): string;
+  getTimestamps(): number[];
 }
 
 export class MarketState implements IMarketState {
@@ -65,19 +72,55 @@ export class MarketState implements IMarketState {
   constructor(name: string, exchanges: Exchange[]) {
     this.name = name;
     this.exchanges = exchanges;
-    const nowTimestamp: number = new Date().getTime();
     this.marketUpdatesByTimestamp = MarketState.createInitialMarketUpdatesByTimestamp(
       this.supportedCryptos,
       this.exchanges,
-      nowTimestamp,
+      0,
     );
+    this.latestTimestamp = 0;
+  }
+
+  public addTickerToState = (tickerUpdate: ITickerUpdate, exchangeName: string) => {
+    // After pushing all latest prices to the new timestamp, update the one exchange
+    // named in the ticker update. This keeps market updates synchronized by timestamp
+    this.duplicateStateForNewTimestamp(tickerUpdate.timestamp);
+    this.marketUpdatesByTimestamp[tickerUpdate.timestamp][tickerUpdate.cryptoCurrency]
+        .updates[exchangeName] = tickerUpdate;
+    this.latestTimestamp = tickerUpdate.timestamp;
   }
 
   public getExchanges = () => {
     return this.exchanges;
   }
 
+  public getLatestMarketUpdateCryptoMap = () => {
+    return this.marketUpdatesByTimestamp[this.latestTimestamp];
+  }
+
+  public getMarketUpdateCryptoMapByTimestamp = (timestamp: number) => {
+    if (this.marketUpdatesByTimestamp[timestamp]) {
+      return this.marketUpdatesByTimestamp[timestamp];
+    } else {
+      return {};
+    }
+  }
+
   public getName = () => {
     return this.name;
+  }
+
+  public getTimestamps = () => {
+    return Object.keys(this.marketUpdatesByTimestamp)
+      .sort((a: string, b: string) => (parseInt(a, 10) - parseInt(b, 10)))
+      .map((tsStr: string) => parseInt(tsStr, 10));
+  }
+
+  private duplicateStateForNewTimestamp = (timestamp: number) => {
+    const duplicateMarketUpdate: IMarketUpdateByCrypto = this.marketUpdatesByTimestamp[this.latestTimestamp];
+    // Update the MarketUpdate's timestamp
+    this.supportedCryptos.forEach((crypto: CryptoCurrencies) => {
+      duplicateMarketUpdate[crypto.valueOf()].timestamp = timestamp;
+    });
+    this.marketUpdatesByTimestamp[timestamp] = duplicateMarketUpdate;
   }
 }
