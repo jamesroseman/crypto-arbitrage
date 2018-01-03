@@ -3,7 +3,6 @@
 import { CryptoCurrencies, Currencies, ICurrencyPair } from "./Currency";
 import { Exchange } from "./Exchange";
 import { ExchangeState } from "./ExchangeState";
-import { ITickerUpdate } from "./TickerUpdate";
 
 jest.mock("./ExchangeState");
 

@@ -18,7 +18,7 @@ export class ExchangeState implements IExchangeState {
   public currencies: { [cryptoCurrency: string]: ICurrencyHistory } = {};
   public timestamps: number[] = [];
   public addTickerToState = jest.fn();
-  protected name: string;
+  public name: string;
 
   constructor(name: string) {
     this.name = name;
