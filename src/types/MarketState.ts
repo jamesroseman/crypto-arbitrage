@@ -97,6 +97,10 @@ export class MarketState implements IMarketState {
     return this.marketUpdatesByTimestamp[this.latestTimestamp];
   }
 
+  public getLatestTimestamp = () => {
+    return this.latestTimestamp;
+  }
+
   public getMarketUpdateCryptoMapByTimestamp = (timestamp: number) => {
     if (this.marketUpdatesByTimestamp[timestamp]) {
       return this.marketUpdatesByTimestamp[timestamp];

@@ -17,19 +17,21 @@ describe("Exchange", () => {
     it("should return false and not call ticker update or modify state when given an invalid message", () => {
       const testInvalidMessage: string = "any message";
       class NoValidMessagesExchange extends Exchange {
+        protected getCurrencyPairFromMsg = jest.fn();
+        protected getTickerUpdateFromMsg = jest.fn();
         constructor() {
           super(
             "NoValidMessages",
-            jest.fn(),
-            jest.fn(),
+            "NoValidMessages",
             mockOnTickerUpdate,
           );
         }
-        public isValidMsg(msg: string) { return false; }
-        public isHeartbeatMsg(msg: string) { return false; }
-        public isTickerMsg(msg: string) { return false; }
-        public initializeExchangeConnection() { return true; }
-        public initializeExchangeTicker() { return true; }
+        public isValidMsg = (msg: any) => false;
+        public isHeartbeatMsg = (msg: any) => false;
+        public isSubscriptionMsg = (msg: any) => false;
+        public isTickerMsg = (msg: any) => false;
+        protected initializeExchangeConnection = () => true;
+        protected initializeExchangeTicker = () => true;
       }
       const testExchange: NoValidMessagesExchange = new NoValidMessagesExchange();
       expect(testExchange.consumeMsg(testInvalidMessage)).toBe(false);
@@ -40,19 +42,21 @@ describe("Exchange", () => {
     it("should return true and not call ticker update or modify state when given a heartbeat message", () => {
       const testHeartbeatMsg: string = "any message";
       class ValidHeartbeatMessagesExchange extends Exchange {
+        protected getCurrencyPairFromMsg = jest.fn();
+        protected getTickerUpdateFromMsg = jest.fn();
         constructor() {
           super(
             "ValidHeartbeatMessages",
-            jest.fn(),
-            jest.fn(),
+            "ValidHeartbeatMessages",
             mockOnTickerUpdate,
           );
         }
-        public isValidMsg(msg: string) { return true; }
-        public isHeartbeatMsg(msg: string) { return true; }
-        public isTickerMsg(msg: string) { return false; }
-        public initializeExchangeConnection() { return true; }
-        public initializeExchangeTicker() { return true; }
+        public isValidMsg = (msg: any) => true;
+        public isHeartbeatMsg = (msg: any) => true;
+        public isSubscriptionMsg = (msg: any) => false;
+        public isTickerMsg = (msg: any) => false;
+        protected initializeExchangeConnection = () => true;
+        protected initializeExchangeTicker = () => true;
       }
       const testExchange: ValidHeartbeatMessagesExchange = new ValidHeartbeatMessagesExchange();
       expect(testExchange.consumeMsg(testHeartbeatMsg)).toBe(true);
@@ -63,19 +67,21 @@ describe("Exchange", () => {
     it("should return true and call ticker update and modify state when given a ticker message", () => {
       const testTickerMsg: string = "any message";
       class ValidTickerMessagesExchange extends Exchange {
+        protected getCurrencyPairFromMsg = jest.fn();
+        protected getTickerUpdateFromMsg = jest.fn();
         constructor() {
           super(
             "ValidTickerMessages",
-            jest.fn(),
-            jest.fn(),
+            "ValidTickerMessages",
             mockOnTickerUpdate,
           );
         }
-        public isValidMsg(msg: string) { return true; }
-        public isHeartbeatMsg(msg: string) { return false; }
-        public isTickerMsg(msg: string) { return true; }
-        public initializeExchangeConnection() { return true; }
-        public initializeExchangeTicker() { return true; }
+        public isValidMsg = (msg: any) => true;
+        public isHeartbeatMsg = (msg: any) => false;
+        public isSubscriptionMsg = (msg: any) => false;
+        public isTickerMsg = (msg: any) => true;
+        protected initializeExchangeConnection = () => true;
+        protected initializeExchangeTicker = () => true;
       }
       const testExchange: ValidTickerMessagesExchange = new ValidTickerMessagesExchange();
       expect(testExchange.consumeMsg(testTickerMsg)).toBe(true);
@@ -88,19 +94,21 @@ describe("Exchange", () => {
     it("should get the set onTickerUpdate", () => {
       const mockOnTickerUpdate = jest.fn();
       class GetOnTickerUpdateExchange extends Exchange {
+        protected getCurrencyPairFromMsg = jest.fn();
+        protected getTickerUpdateFromMsg = jest.fn();
         constructor() {
           super(
             "GetOnTickerUpdateExchange",
-            jest.fn(),
-            jest.fn(),
+            "GetOnTickerUpdateExchange",
             mockOnTickerUpdate,
           );
         }
-        public isValidMsg(msg: string) { return false; }
-        public isHeartbeatMsg(msg: string) { return false; }
-        public isTickerMsg(msg: string) { return false; }
-        public initializeExchangeConnection() { return true; }
-        public initializeExchangeTicker() { return true; }
+        public isValidMsg = (msg: any) => false;
+        public isHeartbeatMsg = (msg: any) => false;
+        public isSubscriptionMsg = (msg: any) => false;
+        public isTickerMsg = (msg: any) => false;
+        protected initializeExchangeConnection = () => true;
+        protected initializeExchangeTicker = () => true;
       }
       const testExchange: GetOnTickerUpdateExchange = new GetOnTickerUpdateExchange();
       expect(testExchange.getOnTickerUpdate()).toBe(mockOnTickerUpdate);
@@ -111,19 +119,21 @@ describe("Exchange", () => {
     it("should get the set name", () => {
       const testExchangeName: string = "GetNameExchange";
       class GetNameExchange extends Exchange {
+        protected getCurrencyPairFromMsg = jest.fn();
+        protected getTickerUpdateFromMsg = jest.fn();
         constructor() {
           super(
             testExchangeName,
-            jest.fn(),
-            jest.fn(),
+            testExchangeName,
             jest.fn(),
           );
         }
-        public isValidMsg(msg: string) { return false; }
-        public isHeartbeatMsg(msg: string) { return false; }
-        public isTickerMsg(msg: string) { return false; }
-        public initializeExchangeConnection() { return true; }
-        public initializeExchangeTicker() { return true; }
+        public isValidMsg = (msg: any) => false;
+        public isHeartbeatMsg = (msg: any) => false;
+        public isSubscriptionMsg = (msg: any) => false;
+        public isTickerMsg = (msg: any) => false;
+        protected initializeExchangeConnection = () => true;
+        protected initializeExchangeTicker = () => true;
       }
       const testExchange: GetNameExchange = new GetNameExchange();
       expect(testExchange.getName()).toBe(testExchangeName);
@@ -136,20 +146,22 @@ describe("Exchange", () => {
       const mockExchangeState: ExchangeState = new ExchangeState(testExchangeStateName);
       const testExchangeName: string = "GetStateExchange";
       class GetStateExchange extends Exchange {
+        protected getCurrencyPairFromMsg = jest.fn();
+        protected getTickerUpdateFromMsg = jest.fn();
         constructor() {
           super(
             testExchangeName,
-            jest.fn(),
-            jest.fn(),
+            testExchangeName,
             jest.fn(),
             mockExchangeState,
           );
         }
-        public isValidMsg(msg: string) { return false; }
-        public isHeartbeatMsg(msg: string) { return false; }
-        public isTickerMsg(msg: string) { return false; }
-        public initializeExchangeConnection() { return true; }
-        public initializeExchangeTicker() { return true; }
+        public isValidMsg = (msg: any) => false;
+        public isHeartbeatMsg = (msg: any) => false;
+        public isSubscriptionMsg = (msg: any) => false;
+        public isTickerMsg = (msg: any) => false;
+        protected initializeExchangeConnection = () => true;
+        protected initializeExchangeTicker = () => true;
       }
       const testExchange: GetStateExchange = new GetStateExchange();
       expect(testExchange.getState()).toEqual(mockExchangeState);
@@ -159,19 +171,21 @@ describe("Exchange", () => {
       const testExchangeStateName: string = "GetStateExchangeState";
       const testExchangeName: string = "GetStateExchange";
       class GetStateExchange extends Exchange {
+        protected getCurrencyPairFromMsg = jest.fn();
+        protected getTickerUpdateFromMsg = jest.fn();
         constructor() {
           super(
             testExchangeName,
-            jest.fn(),
-            jest.fn(),
+            testExchangeName,
             jest.fn(),
           );
         }
-        public isValidMsg(msg: string) { return false; }
-        public isHeartbeatMsg(msg: string) { return false; }
-        public isTickerMsg(msg: string) { return false; }
-        public initializeExchangeConnection() { return true; }
-        public initializeExchangeTicker() { return true; }
+        public isValidMsg = (msg: any) => false;
+        public isHeartbeatMsg = (msg: any) => false;
+        public isSubscriptionMsg = (msg: any) => false;
+        public isTickerMsg = (msg: any) => false;
+        protected initializeExchangeConnection = () => true;
+        protected initializeExchangeTicker = () => true;
       }
       const testExchange: GetStateExchange = new GetStateExchange();
       expect(testExchange.getState().getName()).toBe(testExchangeStateName);
@@ -183,19 +197,21 @@ describe("Exchange", () => {
     const mockUpdatedOnTickerUpdate = jest.fn();
 
     class UpdateOnTickerUpdateExchange extends Exchange {
+      protected getCurrencyPairFromMsg = jest.fn();
+      protected getTickerUpdateFromMsg = jest.fn();
       constructor() {
         super(
           "UpdateOnTickerUpdateExchange",
-          jest.fn(),
-          jest.fn(),
+          "UpdateOnTickerUpdateExchange",
           mockOnTickerUpdate,
         );
       }
-      public isValidMsg(msg: string) { return true; }
-      public isHeartbeatMsg(msg: string) { return false; }
-      public isTickerMsg(msg: string) { return true; }
-      public initializeExchangeConnection() { return true; }
-      public initializeExchangeTicker() { return true; }
+      public isValidMsg = (msg: any) => true;
+      public isHeartbeatMsg = (msg: any) => false;
+      public isSubscriptionMsg = (msg: any) => false;
+      public isTickerMsg = (msg: any) => true;
+      protected initializeExchangeConnection = () => true;
+      protected initializeExchangeTicker = () => true;
     }
 
     it("should call the old onTickerUpdate, then the new one after setting", () => {

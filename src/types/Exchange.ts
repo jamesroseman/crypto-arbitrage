@@ -1,51 +1,56 @@
-import * as WebSocket from "ws";
 import { CryptoCurrencies, Currencies, ICurrencyPair } from "./Currency";
 import { ExchangeState } from "./ExchangeState";
 import { ExchangeStreamTickerRequest } from "./ExchangeStreamTickerRequest";
 import { ITickerUpdate } from "./TickerUpdate";
 
 export interface IExchange {
-  consumeMsg(msg: string): boolean;
+  consumeMsg(msg: any): boolean;
   getName(): string;
   getState(): ExchangeState;
-  initializeExchangeTicker(): void;
-  isValidMsg(msg: string): boolean;
-  isHeartbeatMsg(msg: string): boolean;
-  isTickerMsg(msg: string): boolean;
+  initialize(): void;
+  isValidMsg(msg: any): boolean;
+  isHeartbeatMsg(msg: any): boolean;
+  isTickerMsg(msg: any): boolean;
   setOnTickerUpdate(onUpdate: (update: ITickerUpdate, state: ExchangeState) => void): boolean;
 }
 
 export abstract class Exchange implements IExchange {
+  public abstract isValidMsg: (msg: any) => boolean;
+  public abstract isHeartbeatMsg: (msg: any) => boolean;
+  public abstract isSubscriptionMsg: (msg: any) => boolean;
+  public abstract isTickerMsg: (msg: any) => boolean;
+
   protected isExchangeConnectionInitialized: boolean;
   protected isTickerInitialized: boolean;
   protected name: string;
+  protected shortName: string;
   protected state: ExchangeState;
-  protected getCurrencyPairFromMsg: (msg: string) => ICurrencyPair;
-  protected getTickerUpdateFromMsg: (msg: string, currPair: ICurrencyPair, state: ExchangeState) => ITickerUpdate;
+  protected getCurrencyPairFromMsg: (msg: any) => ICurrencyPair;
+  protected getTickerUpdateFromMsg: (msg: any, currPair: ICurrencyPair, state: ExchangeState) => ITickerUpdate;
   protected onTickerUpdate: (update: ITickerUpdate, state: ExchangeState) => void;
+
+  protected abstract initializeExchangeConnection: () => void;
+  protected abstract initializeExchangeTicker: () => void;
 
   constructor(
     name: string,
-    getCurrencyPairFromMsg: (msg: string) => ICurrencyPair,
-    getTickerUpdateFromMsg: (msg: string, currPair: ICurrencyPair, state: ExchangeState) => ITickerUpdate,
-    onTickerUpdate: (update: ITickerUpdate, state: ExchangeState) => void,
+    shortName: string,
+    /* tslint:disable:no-empty */
+    onTickerUpdate: (update: ITickerUpdate, state: ExchangeState) => void = (u, s) => {},
     state?: ExchangeState | undefined,
   ) {
     this.name = name;
-    this.getCurrencyPairFromMsg = getCurrencyPairFromMsg,
-    this.getTickerUpdateFromMsg = getTickerUpdateFromMsg,
+    this.shortName = shortName;
     this.onTickerUpdate = onTickerUpdate;
     this.state = state ? state : new ExchangeState(name + "State");
   }
 
-  public abstract initializeExchangeTicker(): void;
-  public abstract isValidMsg(msg: string): boolean;
-  public abstract isHeartbeatMsg(msg: string): boolean;
-  public abstract isTickerMsg(msg: string): boolean;
-
-  public consumeMsg = (msg: string): boolean => {
+  public consumeMsg = (msg: any): boolean => {
     if (!this.isValidMsg(msg)) {
       return false;
+    } else if (this.isSubscriptionMsg(msg)) {
+      // Do something with subscription msg
+      return true;
     } else if (this.isHeartbeatMsg(msg)) {
       // Do something with HB msg
       return true;
@@ -71,6 +76,16 @@ export abstract class Exchange implements IExchange {
     return this.state;
   }
 
+  public setGetCurrencyPairFromMsg = (getCurrencyPairFromMsg: (msg: any) => ICurrencyPair) => {
+    this.getCurrencyPairFromMsg = getCurrencyPairFromMsg;
+  }
+
+  public setGetTickerUpdateFromMsg = (
+    getTickerUpdateFromMsg: (msg: any, currPair: ICurrencyPair, state: ExchangeState) => ITickerUpdate,
+  ) => {
+    this.getTickerUpdateFromMsg = getTickerUpdateFromMsg;
+  }
+
   public setOnTickerUpdate(onUpdate: (update: ITickerUpdate, state: ExchangeState) => void) {
     this.onTickerUpdate = onUpdate;
     return true;
@@ -80,6 +95,4 @@ export abstract class Exchange implements IExchange {
     this.initializeExchangeConnection();
     this.initializeExchangeTicker();
   }
-
-  protected abstract initializeExchangeConnection(): void;
 }

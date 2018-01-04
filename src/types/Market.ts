@@ -31,6 +31,14 @@ export class Market implements IMarket {
     return this.name;
   }
 
+  public getLatestMarketUpdateByCrypto = () => {
+    return this.state.getLatestMarketUpdateCryptoMap();
+  }
+
+  public getLatestTimestamp = () => {
+    return this.state.getLatestTimestamp();
+  }
+
   public getOnTickerUpdate = () => {
     return this.onTickerUpdate;
   }

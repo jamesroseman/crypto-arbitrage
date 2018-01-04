@@ -13,12 +13,11 @@ describe("MarketState", () => {
       super(
         mockExchangeName,
         jest.fn(),
-        jest.fn(),
-        jest.fn(),
       );
     }
     public isValidMsg(msg: string) { return false; }
     public isHeartbeatMsg(msg: string) { return false; }
+    public isSubscriptionMsg(msg: string) { return false; }
     public isTickerMsg(msg: string) { return false; }
     public initializeExchangeConnection() { return true; }
     public initializeExchangeTicker() { return true; }
