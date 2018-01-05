@@ -1,15 +1,14 @@
-import { BitfinexExchange, BitmexExchange } from "./models";
+import { BitfinexExchange, BitmexExchange, GdaxExchange } from "./models";
 import { CryptoCurrencies, Currencies, Market } from "./types";
 
 const cryptos: CryptoCurrencies[] = [CryptoCurrencies.Bitcoin, CryptoCurrencies.Ethereum, CryptoCurrencies.Litecoin];
+const currs: Currencies[] = [Currencies.USD];
 const market: Market = new Market(
   "TestMarket",
   [
-    new BitfinexExchange(
-      cryptos,
-      [Currencies.USD],
-    ),
+    new BitfinexExchange(cryptos, currs),
     new BitmexExchange(cryptos),
+    new GdaxExchange(cryptos, currs),
   ],
   (update, state) => { return; },
 );
@@ -17,14 +16,7 @@ const market: Market = new Market(
 market.initialize();
 
 setInterval(() => {
-  // console.log("\n* * * " + market.getLatestTimestamp() + " * * *\n");
-  // console.log("- - - BTC - - -");
-  // console.log(market.getLatestMarketUpdateByCrypto().BTC);
-  // console.log("- - - ETH - - -");
-  // console.log(market.getLatestMarketUpdateByCrypto().ETH);
-  // console.log("- - - LTC - - -");
-  // console.log(market.getLatestMarketUpdateByCrypto().LTC);
-  console.log(market.getLatestMarketUpdateByCrypto());
+  console.log(market.getLatestMarketUpdateByCrypto().BTC.updates);
 }, 1000);
 
 

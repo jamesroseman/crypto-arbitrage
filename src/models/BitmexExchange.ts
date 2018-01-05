@@ -58,7 +58,6 @@ export class BitmexExchange extends Exchange {
 
   public getTickerUpdateFromMsg = (msg: any, currPair: ICurrencyPair) => {
     const bmexData = JSON.parse(msg.data).data[0];
-    const updateDate: Date = new Date(bmexData.timestamp);
     const currencyPair: ICurrencyPair = this.getCurrencyPairFromMsg(msg);
     // Because Bitmex only lists a USD pairing for XBT, every other crypto listed is in a XBT pairing,
     // so if either the crypto isn't XBT or the currency isn't XBT, we need to convert.
@@ -72,7 +71,7 @@ export class BitmexExchange extends Exchange {
       bidPrice: bmexData.bidPrice,
       cryptoCurrency: currencyPair.cryptoCurrency,
       currency: currencyPair.currency,
-      timestamp: updateDate.getTime(),
+      timestamp: parseInt(bmexData.timestamp, 10),
     } as ITickerUpdate;
   }
 
@@ -107,6 +106,7 @@ export class BitmexExchange extends Exchange {
       // rate has been established, this is a valid ticker update message.
       return updateContainsCrypto && this.isXbtPriceSet;
     }
+    return false;
   }
 
   protected initializeExchangeConnection = () => {

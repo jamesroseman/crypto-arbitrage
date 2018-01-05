@@ -63,12 +63,12 @@ describe("BitfinexExchange", () => {
       [Currencies.USD],
     );
     const testBTCSubscriptionMessage = {
-      data: {
+      data: JSON.stringify({
         chanId: 1,
         channel: "ticker",
         event: "subscribed",
         pair: "BTCUSD",
-      },
+      }),
     };
 
     it("should get (BTC, USD) pair from message", () => {
@@ -76,7 +76,7 @@ describe("BitfinexExchange", () => {
       const testAskValue: number = 20;
       const testTickerMessage = {
         // [ CHANNEL_ID, BID, BID_SIZE, ASK, ASK_SIZE, DAILY_CHANGE, DAILY_CHANGE_PERC, LAST_PRICE, VOLUME, HIGH, LOW]
-        data: [1, testBidValue, 0, testAskValue, 0, 0, 0, 0, 0, 0, 0],
+        data: JSON.stringify([1, testBidValue, 0, testAskValue, 0, 0, 0, 0, 0, 0, 0]),
       };
       const expectedCurrencyPair: ICurrencyPair = {
         cryptoCurrency: CryptoCurrencies.Bitcoin,
@@ -93,12 +93,12 @@ describe("BitfinexExchange", () => {
       [Currencies.USD],
     );
     const testBTCSubscriptionMessage = {
-      data: {
+      data: JSON.stringify({
         chanId: 1,
         channel: "ticker",
         event: "subscribed",
         pair: "BTCUSD",
-      },
+      }),
     };
 
     it("should get correct ticker update from ticker message", () => {
@@ -106,7 +106,7 @@ describe("BitfinexExchange", () => {
       const testAskValue: number = 20;
       const testTickerMessage = {
         // [ CHANNEL_ID, BID, BID_SIZE, ASK, ASK_SIZE, DAILY_CHANGE, DAILY_CHANGE_PERC, LAST_PRICE, VOLUME, HIGH, LOW]
-        data: [1, testBidValue, 0, testAskValue, 0, 0, 0, 0, 0, 0, 0],
+        data: JSON.stringify([1, testBidValue, 0, testAskValue, 0, 0, 0, 0, 0, 0, 0]),
       };
       const testCurrencyPair: ICurrencyPair = {
         cryptoCurrency: CryptoCurrencies.Bitcoin,
