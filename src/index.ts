@@ -16,6 +16,7 @@ const market: Market = new Market(
 market.initialize();
 
 setInterval(() => {
+  console.log("- - - " + market.getLatestTimestamp() + " - - -");
   console.log(market.getLatestMarketUpdateByCrypto().BTC.updates);
 }, 1000);
 

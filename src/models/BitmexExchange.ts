@@ -66,12 +66,13 @@ export class BitmexExchange extends Exchange {
       bmexData.bidPrice *= this.lastXbtBidPrice;
       currencyPair.currency = this.currency;
     }
+    const now: Date = new Date();
     return {
       askPrice: bmexData.askPrice,
       bidPrice: bmexData.bidPrice,
       cryptoCurrency: currencyPair.cryptoCurrency,
       currency: currencyPair.currency,
-      timestamp: parseInt(bmexData.timestamp, 10),
+      timestamp: now.getTime(),
     } as ITickerUpdate;
   }
 

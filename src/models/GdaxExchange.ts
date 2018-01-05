@@ -33,7 +33,7 @@ interface IGdaxTickerUpdate {
 }
 
 export class GdaxExchange extends Exchange {
-  public static currenciesToProductIds = (cryptoCurrencies: CryptoCurrencies[], currencies: Currencies[]) => {
+  public static getProductIdsFromCurrencies = (cryptoCurrencies: CryptoCurrencies[], currencies: Currencies[]) => {
     const productIds: string[] = [];
     cryptoCurrencies.forEach((cryptoCurrency: CryptoCurrencies) => {
       currencies.forEach((currency: Currencies) => {
@@ -148,7 +148,7 @@ export class GdaxExchange extends Exchange {
   }
 
   private assembleTickerSubscriptionMsg = (cryptoCurrencies: CryptoCurrencies[], currencies: Currencies[]) => {
-    const productIds: string[] = GdaxExchange.currenciesToProductIds(cryptoCurrencies, currencies);
+    const productIds: string[] = GdaxExchange.getProductIdsFromCurrencies(cryptoCurrencies, currencies);
     return JSON.stringify({
       channels: [{
         name: WSS_TICKER_CHANNEL_NAME,

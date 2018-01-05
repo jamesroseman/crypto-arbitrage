@@ -81,8 +81,10 @@ describe("BitmexExchange", () => {
         currency: Currencies.USD,
         timestamp: 0,
       };
-      expect(testBitmexExchange.getTickerUpdateFromMsg(testBTCTickerMessage, testCurrencyPair))
-        .toEqual(expectedTickerUpdate);
+      const actualTickerUpdate: ITickerUpdate =
+        testBitmexExchange.getTickerUpdateFromMsg(testBTCTickerMessage, testCurrencyPair);
+      actualTickerUpdate.timestamp = expectedTickerUpdate.timestamp;
+      expect(actualTickerUpdate).toEqual(expectedTickerUpdate);
     });
 
     it("should get (ETH, USD) from message with XBT to USD conversion", () => {
@@ -111,8 +113,10 @@ describe("BitmexExchange", () => {
       };
       // First we need to load in the current XBTUSD price
       expect(testBitmexExchange.isTickerMsg(testBTCTickerMessage)).toBe(true);
-      expect(testBitmexExchange.getTickerUpdateFromMsg(testETHTickerMessage, testCurrencyPair))
-        .toEqual(expectedTickerUpdate);
+      const actualTickerUpdate: ITickerUpdate =
+        testBitmexExchange.getTickerUpdateFromMsg(testETHTickerMessage, testCurrencyPair);
+      actualTickerUpdate.timestamp = expectedTickerUpdate.timestamp;
+      expect(actualTickerUpdate).toEqual(expectedTickerUpdate);
     });
 
     it("should get (LTC, USD) from message with XBT to USD conversion", () => {
@@ -135,18 +139,16 @@ describe("BitmexExchange", () => {
       const expectedTickerUpdate: ITickerUpdate = {
         askPrice: testLTCAskPrice * testAskPrice,
         bidPrice: testLTCBidPrice * testBidPrice,
-        cryptoCurrency: CryptoCurrencies.Litecoin
-
-
-
-        ,
+        cryptoCurrency: CryptoCurrencies.Litecoin,
         currency: Currencies.USD,
         timestamp: 0,
       };
       // First we need to load in the current XBTUSD price
       expect(testBitmexExchange.isTickerMsg(testBTCTickerMessage)).toBe(true);
-      expect(testBitmexExchange.getTickerUpdateFromMsg(testLTCTickerMessage, testCurrencyPair))
-        .toEqual(expectedTickerUpdate);
+      const actualTickerUpdate: ITickerUpdate =
+        testBitmexExchange.getTickerUpdateFromMsg(testLTCTickerMessage, testCurrencyPair);
+      actualTickerUpdate.timestamp = expectedTickerUpdate.timestamp;
+      expect(actualTickerUpdate).toEqual(expectedTickerUpdate);
     });
   });
 });
