@@ -1,4 +1,4 @@
-import { BitfinexExchange, BitmexExchange, GdaxExchange } from "./models";
+import { BitfinexExchange, BitmexExchange, GdaxExchange, OKCoinExchange } from "./models";
 import { CryptoCurrencies, Currencies, Market } from "./types";
 
 const cryptos: CryptoCurrencies[] = [CryptoCurrencies.Bitcoin, CryptoCurrencies.Ethereum, CryptoCurrencies.Litecoin];
@@ -9,6 +9,7 @@ const market: Market = new Market(
     new BitfinexExchange(cryptos, currs),
     new BitmexExchange(cryptos),
     new GdaxExchange(cryptos, currs),
+    new OKCoinExchange(cryptos, currs),
   ],
   (update, state) => { return; },
 );
